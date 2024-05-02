@@ -26,7 +26,7 @@ library("marmap")
 world <- map_data("world") # coastlines for maps
 world2 <- map_data("world2") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
 # x FDiv (divergence) based on based on HSI data
 
 # Faith's and SR
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("baseline",dir())] ; files
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -76,7 +76,7 @@ ann.sr.faith <- data.frame(tab %>% group_by(cell_id) %>%
 
 
 # SES Faith
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("baseline",dir())] ; files
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -119,7 +119,7 @@ ann.ses.faith <- data.frame(tab %>% group_by(cell_id) %>%
 
 
 # B div indices (Jac/Jtu/Jne) 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
 files <- dir()[grep("baseline",dir())]
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -160,7 +160,7 @@ ann.beta <- data.frame(tab %>% group_by(cell_id) %>%
 
 
 # FRic (non essential)
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
 files <- dir()[grep("FDindices_baseline",dir())] ; files
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -197,7 +197,7 @@ ann.dbFD <- data.frame(tab %>% group_by(cell_id) %>%
 
 
 # Remaining indices
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
 files <- dir()[grep("_baseline",dir())]; files
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -256,9 +256,9 @@ pca <- PCA(X = all.fd[,c(4:14)], scale.unit = T, ncp = 5, graph = F)
 # % of var.             64.003  20.276   8.252   3.794  
 # Cumulative % of var.  64.003  84.279  92.532  96.325
 # Basic plots
-plot(pca, axes = c(1,2), choix = "var")
-plot(pca, axes = c(2,3), choix = "var")
-plot(pca, axes = c(3,4), choix = "var")
+#plot(pca, axes = c(1,2), choix = "var")
+#plot(pca, axes = c(2,3), choix = "var")
+#plot(pca, axes = c(3,4), choix = "var")
 # str(pca$ind$coord)
 
 # Provide PC scores (1-3) to ddf
@@ -300,13 +300,13 @@ all.fd[which(all.fd$x < 0),"x2"] <- (all.fd[which(all.fd$x < 0),"x"]) + 360
 # summary(all.fd$x2)
 
 ### Save all indices
-setwd("/net/kryo/work/fabioben/GODLY/data/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/")
 save(x = all.fd, file = "table_mean_ann_FD_indices_baseline_04.09.23.RData")
 
 ### Save PC maps
 library("ggpubr")
 panel <- ggarrange(map1,map2,map3, align = "hv", ncol = 1)
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = panel, filename = "map_PC1-3_FD_indices.pdf", dpi = 300, height = 10, width = 8)
 
 
@@ -315,7 +315,7 @@ ggsave(plot = panel, filename = "map_PC1-3_FD_indices.pdf", dpi = 300, height = 
 ### 2) Retrieve the mean annual values of the chosen biological carbon pump variables to examine together with the FD indices
 
 ### To re-load the mean ensemble FD indices
-setwd("/net/kryo/work/fabioben/GODLY/data/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/")
 all.fd <- get(load("table_mean_ann_FD_indices_baseline_04.09.23.RData"))
 
 # x CHL-A --> globcolour_monthly_100km_CHL_REP
@@ -536,7 +536,7 @@ ras <- raster(spg)
 all.fd$Slope2 <- raster::extract(x = ras, y = all.fd[,c("x2","y")])
 
 ### 2nd sanity check for slopes this time: 
-ggplot(aes(x = Slope, y = Slope2), data = all.fd) + geom_point(alpha = .1) + geom_abline(slope = 1, intercept = 0, colour = "red") + theme_classic()
+# ggplot(aes(x = Slope, y = Slope2), data = all.fd) + geom_point(alpha = .1) + geom_abline(slope = 1, intercept = 0, colour = "red") + theme_classic()
 ### Note: slopes from UVP data are way steeper than based on satellite data. Let's examine their spatial pattern.
 
 ### 3rd sanity check: CHL ~ NPP
@@ -563,7 +563,7 @@ ggplot(aes(x = Slope, y = Slope2), data = all.fd) + geom_point(alpha = .1) + geo
 ### CCL: Data from Clements et al. (2023) has way more gaps (14% of cells have NAs). So use it for sensitivity analyses.
 
 ### Save 
-setwd("/net/kryo/work/fabioben/GODLY/data/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/")
 save(x = all.fd, file = "table_mean_ann_FD_indices_baseline+BCP_06.09.23.RData")
 
 
@@ -602,7 +602,6 @@ ras <- raster(spg) # plot(ras)
 all.fd$MESOZOO <- raster::extract(x = ras, y = all.fd[,c("x","y")])
 # Save
 save(x = all.fd, file = "table_mean_ann_FD_indices_baseline+BCP+biom_22.11.23.RData")
-
 
 ### Examine covariance quickly (code below)
 ggplot(data = all.fd, aes(x = SR, y = MESOZOO)) + geom_point(alpha = .1) +
@@ -643,7 +642,7 @@ ggplot(data = all.fd, aes(x = FDiv, y = MESOZOO)) + geom_point(alpha = .1) +
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 3) Examine covariance of BCP variables in a PCA - like you did for FD indices
-colnames(all.fd)
+#colnames(all.fd)
 data4pca <- na.omit(all.fd[,c(1:3,21:35,39,40)])
 # log10 transform all vars except slope and eratio; colnames(data4pca)
 data4pca[,c(4:17,20)] <- log10(data4pca[,c(4:17,20)])
@@ -658,9 +657,9 @@ pca <- PCA(X = data4pca[,c(4:length(data4pca))], scale.unit = T, ncp = 4, graph 
 # Cumulative % of var.  55.315  87.350  93.467  96.009  97.53
 
 # Basic plots
-plot(pca, axes = c(1,2), choix = "var")
-plot(pca, axes = c(2,3), choix = "var")
-plot(pca, axes = c(3,4), choix = "var")
+#plot(pca, axes = c(1,2), choix = "var")
+#plot(pca, axes = c(2,3), choix = "var")
+#plot(pca, axes = c(3,4), choix = "var")
 # str(pca$ind$coord)
 
 # Provide PC scores (1-3) to ddf
@@ -695,7 +694,7 @@ map3 <- ggplot() + geom_raster(aes(x = x, y = y, fill = PC3), data = data4pca) +
      scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 panel <- ggarrange(map1,map2,map3, align = "hv", ncol = 1)
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = panel, filename = "map_PC1-3_BCP_indices_22_11_23.pdf", dpi = 300, height = 10, width = 8)
 
 
