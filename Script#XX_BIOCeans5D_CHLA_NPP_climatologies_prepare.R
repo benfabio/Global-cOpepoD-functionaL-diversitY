@@ -15,8 +15,8 @@ library("ncdf4")
 library("raster")
 library("marmap")
 
-world <- map_data("world") # coastlines for maps
-world2 <- map_data("world2") # coastlines for maps - Pacififc-centered
+world <- map_data("world") # coastlines
+world2 <- map_data("world2") # coastlines - Pacific-centered
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ mclapply(files, function(f) {
                     
             } # eo for loop - v in vars     
     
-        }, mc.cores = 15
+        }, mc.cores = 20
         
 ) # eo LAPPLY
 
