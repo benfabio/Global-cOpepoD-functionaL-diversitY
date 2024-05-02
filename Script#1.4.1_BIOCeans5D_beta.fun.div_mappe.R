@@ -23,12 +23,12 @@ library("ggthemes")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 1) Load the tables of Faith's indices and compute ensemble averages and uncertainties around it
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div/") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div/") # dir() # should be of length 36
 files <- dir()[grep("baseline",dir())]
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -50,11 +50,11 @@ tab$cell_id <- factor(paste(tab$x, tab$y, sep = "_")) # length(unique(tab$cell_i
 ### Examine distributions
 months <- c("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec")
 tab$month <- factor(tab$month,months)
-ggplot(data = tab, aes(x = factor(SDM), y = beta.jac)) + geom_boxplot() + xlab("SDM") + ylab("Jaccard") + facet_wrap(.~factor(month), ncol = 4)
-ggplot(data = tab, aes(x = factor(SDM), y = beta.jtu)) + geom_boxplot() + xlab("SDM") + ylab("Turnover") + facet_wrap(.~factor(month), ncol = 4)
-ggplot(data = tab, aes(x = factor(SDM), y = beta.jne)) + geom_boxplot() + xlab("SDM") + ylab("Nestedness") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = beta.jac)) + geom_boxplot() + xlab("SDM") + ylab("Jaccard") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = beta.jtu)) + geom_boxplot() + xlab("SDM") + ylab("Turnover") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = beta.jne)) + geom_boxplot() + xlab("SDM") + ylab("Nestedness") + facet_wrap(.~factor(month), ncol = 4)
 # beta ratio
-ggplot(data = tab, aes(x = factor(SDM), y = beta.jtu/beta.jac)) + geom_boxplot() + xlab("SDM") + ylab("ßratio") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = beta.jtu/beta.jac)) + geom_boxplot() + xlab("SDM") + ylab("ßratio") + facet_wrap(.~factor(month), ncol = 4)
 
 tab$ratio <- tab$beta.jtu/tab$beta.jac
 
