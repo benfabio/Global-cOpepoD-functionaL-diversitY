@@ -26,7 +26,7 @@ library("readxl")
 library("gtools")
 library("naniar")
 
-setwd("/net/kryo/work/fabioben/GODLY/data")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data")
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -84,7 +84,6 @@ ggplot(IntDi[IntDi$IntDi > 0,], aes(Species, IntDi)) + geom_point() + ylab("Inte
     scale_x_discrete(name = "Species", labels = NULL) + theme_classic() + theme(axis.ticks = element_blank()) 
 
 
-
 ### 3°) Explore relationships between IntDi and traits
 
 # Attribute IntDi to traits table
@@ -104,15 +103,15 @@ ggplot(aes(y = IntDi, x = factor(FG)), data = traits_red2[traits_red2$IntDi > 0 
     geom_boxplot(colour = "black", fill = "gray") + ylab("Integrated distinctiveness (IntDi)") + xlab("FG (Benedetti et al., 2022)") +
     theme_classic()
 ### --> FGs that show highest IntDiv: 2,5,1,4...then 3,6.
-unique(traits_red2[traits_red2$FG == 2,"Species"]) # Oncaeidae (only detritivores...)
-unique(traits_red2[traits_red2$FG == 5,"Species"]) # Very large carnivores
-unique(traits_red2[traits_red2$FG == 1,"Species"]) # Clausocalanus because of spawning...
-unique(traits_red2[traits_red2$FG == 4,"Species"]) # Small ambush carnivores (Corycaeus)
+#unique(traits_red2[traits_red2$FG == 2,"Species"]) # Oncaeidae (only detritivores...)
+#unique(traits_red2[traits_red2$FG == 5,"Species"]) # Very large carnivores
+#unique(traits_red2[traits_red2$FG == 1,"Species"]) # Clausocalanus because of spawning...
+#unique(traits_red2[traits_red2$FG == 4,"Species"]) # Small ambush carnivores (Corycaeus)
 # Most specialized taxa. Makes sense! Not your average copepod
 ### --> FGs that show LOWEST IntDiv: 9,10,11
-unique(traits_red2[traits_red2$FG == 9,"Species"]) # small-medium sized omnivores
-unique(traits_red2[traits_red2$FG == 10,"Species"]) # oithona
-unique(traits_red2[traits_red2$FG == 11,"Species"]) # Acartia/Centropages
+#unique(traits_red2[traits_red2$FG == 9,"Species"]) # small-medium sized omnivores
+#unique(traits_red2[traits_red2$FG == 10,"Species"]) # oithona
+#unique(traits_red2[traits_red2$FG == 11,"Species"]) # Acartia/Centropages
 
 ### ~ Order/Families
 ggplot(aes(y = IntDi, x = factor(Family)), data = traits_red2[traits_red2$IntDi > 0,]) + geom_boxplot(colour = "black", fill = "gray") +
@@ -246,7 +245,7 @@ rm(res); gc()
 
 ### Summarize ensemble prediction
 ens <- data.frame( shifts %>% group_by(species) %>% summarise(mean.shift = mean(shift.km), sd = sd(shift.km)) )
-# summary(ens)
+#summary(ens)
 ens$species <- as.character(ens$species)
 
 ### Supply to 'traits_red2' and analyze covariance with IntDi
@@ -264,8 +263,8 @@ for(s in unique(ens$species)) {
 # ggplot() + geom_point(aes(x = traits_red2$IntDi, y = traits_red2$mean.shift), data = traits_red2) + theme_bw()
 # No relationship
 df <- traits_red2 %>% filter(!(is.na(mean.shift)))
-# cor(df$IntDi, df$mean.shift)
-# summary(lm(IntDi ~ mean.shift, data = df))
+#cor(df$IntDi, df$mean.shift)
+#summary(lm(IntDi ~ mean.shift, data = df))
 
 traits_red2$Species <- factor(traits_red2$Species, levels = traits_red2[order(traits_red2$IntDi),"Species"]) # 
 
@@ -275,9 +274,9 @@ traits_red2$Species <- factor(traits_red2$Species, levels = traits_red2[order(tr
 #     theme_classic() + theme(axis.ticks = element_blank())
 
 # No relationship. Plot distrib of shifts per FG (boxplots)
-ggplot(aes(y = mean.shift, x = factor(FG)), data = traits_red2[!is.na(traits_red2$FG),]) +
-    geom_boxplot(colour = "black", fill = "gray") + ylab("Centroid shift (km)") + xlab("FG (Benedetti et al., 2023)") +
-    theme_classic()
+#ggplot(aes(y = mean.shift, x = factor(FG)), data = traits_red2[!is.na(traits_red2$FG),]) +
+#    geom_boxplot(colour = "black", fill = "gray") + ylab("Centroid shift (km)") + xlab("FG (Benedetti et al., 2023)") +
+#    theme_classic()
 ### --> all medians kind of overlap with IQR; no strong variance in shifts per known FG
     
 ### Explore distrbution of mean shifts in PCoA space
@@ -318,7 +317,7 @@ ggarrange(p1,p2, labels = letters, align = "hv", ncol = 2, nrow = 1)
 ### Examine distrbution of shifts...seems like there is an outlier
 ggplot(df[df$IntDi > 0,], aes(x = mean.shift)) + geom_histogram(binwidth=50, colour="black", fill="white")
 # Who are those 3-5 species with shifts > 1000km?
-ens[order(ens$mean.shift, decreasing = T),"species"]
+#ens[order(ens$mean.shift, decreasing = T),"species"]
 #   [1] "Spinocalanus_elongatus"             "Parvocalanus_latus"                
 #   [3] "Acartia_Odontacartia_amboinensis"   "Scolecithricella_orientalis"       
 #   [5] "Atrophia_glacialis"
