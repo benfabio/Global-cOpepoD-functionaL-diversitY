@@ -23,12 +23,12 @@ library("ggthemes")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 1) Load the tables of Faith's indices and compute ensemble averages and uncertainties around it
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith") # dir() # should be of length 36
 files <- dir()
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -164,15 +164,15 @@ ggplot(data = ann, aes(x = mean.rich, y = mean.faith, colour = abs(y))) +
 
 # Split per 'biomes' and compute differences in slopes 
 # Test lm between FR and SR
-summary(lm(mean.faith ~ mean.rich+abs(y), data = ann)) # 0.732 
-summary(lm(mean.faith ~ mean.rich*abs(y), data = ann)) # 0.801 ! --> interac
+#summary(lm(mean.faith ~ mean.rich+abs(y), data = ann)) # 0.732 
+#summary(lm(mean.faith ~ mean.rich*abs(y), data = ann)) # 0.801 ! --> interac
 
 ### Split data into tropical bands ('biomes')
 ann$biome <- NA
 ann[which(abs(ann$y) < 30),"biome"] <- "Tropical (0-30°)"
 ann[which(abs(ann$y) > 30),"biome"] <- "Temperate (30-45°)"
 ann[which(abs(ann$y) > 45),"biome"] <- "Polar & Subpolar (>45°)"
-summary(factor(ann$biome))
+#summary(factor(ann$biome))
 
 plot <- ggplot(data = ann, aes(x = mean.rich, y = mean.faith, colour = factor(biome))) + geom_point() + 
   scale_colour_manual(name = "Biome", values = c("#085a73","#08acd5","#ff6262")) +
@@ -183,9 +183,9 @@ plot <- ggplot(data = ann, aes(x = mean.rich, y = mean.faith, colour = factor(bi
 ggsave(plot = plot, filename = "plot_FRxSRxBiomes.jpg", dpi = 300, height = 4, width = 8)           
   
 ### ANCOVA to tets for differences in slope between biomes
-summary(lm(mean.faith ~ mean.rich+factor(biome), data = ann)) # 0.79
-summary(lm(mean.faith ~ mean.rich*factor(biome), data = ann)) # 0.87!
-summary( aov(mean.faith ~ mean.rich*factor(biome), data = ann) )
+#summary(lm(mean.faith ~ mean.rich+factor(biome), data = ann)) # 0.79
+#summary(lm(mean.faith ~ mean.rich*factor(biome), data = ann)) # 0.87!
+#summary( aov(mean.faith ~ mean.rich*factor(biome), data = ann) )
 #                            Df Sum Sq Mean Sq F value Pr(>F)    
 # mean.rich                   1  894.7   894.7  146340 <2e-16 ***
 # factor(biome)               2  416.8   208.4   34090 <2e-16 ***
@@ -231,7 +231,7 @@ anova(mod1,mod2)
 # pd.obs.z: Standardized effect size of PD vs. null communities (= (pd.obs - pd.rand.mean) / pd.rand.sd)
 # pd.obs.p: P-value (quantile) of observed PD vs. null communities (= mpd.obs.rank / runs + 1)
 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES") # dir() # should be of length 36
 files <- dir()
 # f <- files[2]
 res <- mclapply(files, function(f) {
