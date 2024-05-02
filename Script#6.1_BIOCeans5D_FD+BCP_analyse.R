@@ -28,7 +28,7 @@ library("ggcorrplot")
 world <- map_data("world") 
 world2 <- map_data("world2")
 
-setwd("/net/kryo/work/fabioben/GODLY/data")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data")
 fd <- get(load("table_mean_ann_FD_indices_baseline+BCP+biom_22.11.23.RData"))
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ boxes <- ggplot(data = data4box) + geom_boxplot(aes(x = factor(k), y = value, fi
      facet_wrap(.~ factor(variable), ncol = 4, scales = "free_y")
 
 # Save plots
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 #ggsave(plot = map.k, filename = "map_clusters_mean_ann_FD+BCP_ward_08.09.23.pdf", dpi = 300, width = 7, height = 4)
 ggsave(plot = map.k.fancy, filename = "map_clusters_mean_ann_FD+BCP+BIOM_ward_22.11.23_v3.pdf", dpi = 300, width = 7, height = 4)
 ggsave(plot = map.k.fancy, filename = "map_clusters_mean_ann_FD+BCP+BIOM_ward_22.11.23_v3.jpg", dpi = 300, width = 7, height = 4)
@@ -237,30 +237,28 @@ pca <- PCA(X = data4pca[,c(3:length(data4pca))], scale.unit = T, graph = F, ncp 
 # Variance               6.908   1.573   0.791   0.395
 # % of var.             69.083  15.735   7.912   3.950
 # Cumulative % of var.  69.083  84.818  92.730  96.680
-plot.PCA(pca, axes = c(1,2), choix = "var") 
-plot.PCA(pca, axes = c(2,3), choix = "var") 
-
+#plot.PCA(pca, axes = c(1,2), choix = "var") 
+#plot.PCA(pca, axes = c(2,3), choix = "var") 
 
 ### Perform PCA only on tropical grid cells (0-30) and extra tropicals ones
-tropical.pca <- PCA(X = data4pca[which(abs(data4pca$y) <= 30),c(3:length(data4pca))], scale.unit = T, graph = F, ncp = 5, quanti.sup = c(11:22))
-# summary(tropical.pca)
-#                         Dim.1 Dim.2   Dim.3   
-#Variance               6.194   2.041   0.933  
-#% of var.              61.938  20.410  9.332 
-#Cumulative % of var.   61.938  82.349  91.68
-plot.PCA(tropical.pca, axes = c(1,2), choix = "var") 
-# plot.PCA(tropical.pca, axes = c(2,3), choix = "var") 
+# tropical.pca <- PCA(X = data4pca[which(abs(data4pca$y) <= 30),c(3:length(data4pca))], scale.unit = T, graph = F, ncp = 5, quanti.sup = c(11:22))
+# # summary(tropical.pca)
+# #                         Dim.1 Dim.2   Dim.3   
+# #Variance               6.194   2.041   0.933  
+# #% of var.              61.938  20.410  9.332 
+# #Cumulative % of var.   61.938  82.349  91.68
+# #plot.PCA(tropical.pca, axes = c(1,2), choix = "var") 
+# # plot.PCA(tropical.pca, axes = c(2,3), choix = "var") 
 
+# extra.pca <- PCA(X = data4pca[which(abs(data4pca$y) > 30),c(3:length(data4pca))], scale.unit = T, graph = F, ncp = 5, quanti.sup = c(11:22))
+# # summary(extra.pca)
+# #                       Dim.1   Dim.2   Dim.3 
+# # Variance              6.172   1.654   1.090  
+# # % of var.             61.722  16.536  10.89
+# # Cumulative % of var.  61.722  78.258  89.15
 
-extra.pca <- PCA(X = data4pca[which(abs(data4pca$y) > 30),c(3:length(data4pca))], scale.unit = T, graph = F, ncp = 5, quanti.sup = c(11:22))
-# summary(extra.pca)
-#                       Dim.1   Dim.2   Dim.3 
-# Variance              6.172   1.654   1.090  
-# % of var.             61.722  16.536  10.89
-# Cumulative % of var.  61.722  78.258  89.15
-
-plot.PCA(extra.pca, axes = c(1,2), choix = "var") 
-plot.PCA(extra.pca, axes = c(2,3), choix = "var") 
+# plot.PCA(extra.pca, axes = c(1,2), choix = "var") 
+# plot.PCA(extra.pca, axes = c(2,3), choix = "var") 
 
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
