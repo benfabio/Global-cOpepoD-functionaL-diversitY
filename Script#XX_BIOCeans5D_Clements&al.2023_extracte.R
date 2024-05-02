@@ -37,9 +37,7 @@ variables <- c("Pred_BV","Pred_slope","Flux")
 # Pred_BV = particle biovolume (ppm)
 # Pred_slope = slope of particle size distribution (unitless)
 # Flux =  carbon export flux from the seasonal euphotic zone (mgC/m2/d)
-
-v <- "Flux" # for testing fun below
-
+# v <- "Flux" # for testing fun below
 res <- lapply(variables, function(v) {
     
         # Message
