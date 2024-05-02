@@ -8,6 +8,8 @@
 
 ### Latest update: 28/07/23
 
+### !!! WAS NOT KEPT FOR MANUSCRIPT IN PREP. AFTER ALL !!! YOU MAY DISREGARD THIS PART OF THE ANALYSES.
+
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # install.packages("funrar")
@@ -26,7 +28,7 @@ library("naniar")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -56,7 +58,6 @@ traits_red2$Ambush <- as.integer(as.logical(traits_red2$Ambush))
 traits_red2 <- data.frame(traits_red2)
 rownames(traits_red2) <- traits_red2$Species
 
-
 ### Compute functional distance matrix
 # ?compute_dist_matrix
 dist.mat <- compute_dist_matrix(traits_table = traits_red2[,c(8,9,10,12:15,17:19)], metric = "gower")
@@ -64,7 +65,7 @@ dist.mat <- compute_dist_matrix(traits_table = traits_red2[,c(8,9,10,12:15,17:19
 
 
 ### 2) Load a standard community table and compute FD indices based on 'FD' functions for each grid cell
-setwd("/net/kryo/work/fabioben/GODLY/data/community_tables_05_01_21/contemp")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/community_tables_05_01_21/contemp")
 comm <- read.table("table_mon_composition_baseline_GAM_jul.txt")
 spp2keep <- colnames(comm)[c(4:length(comm))] #; spp2keep
 commons <- intersect(spp2keep,traits_red2$Species)# ; length(commons) # FD indices based on 284 taxa 
@@ -79,7 +80,7 @@ comm_fdiv <- as.matrix(na.omit(comm[,c(commons)]))
 # scarcity (local, abundance). *Note*: scarcity can only be computed if relative abundances are provided in the site-species matrix.
 # Test on subset of 'comm_fdiv'
 funrar.mat <- funrar(pres_matrix = comm_fdiv, dist_matrix = dist.mat, rel_abund = T)
-str(funrar.mat)
+#str(funrar.mat)
 # class(funrar.mat) # returns a list
 
 ### What are the different indices computed?
@@ -106,7 +107,7 @@ ggplot(Uni, aes(species, Ui)) + geom_point() + ylab("Uniqueness") +
 # restrictedness
 Rest <- funrar.mat[[3]]
 # head(Rest)
-Rest[order(Rest$Ri, decreasing = T),]
+#Rest[order(Rest$Ri, decreasing = T),]
 Rest$species <- factor(Rest$species, levels = Rest[order(Rest$Ri),"species"]) # 
 ggplot(Rest, aes(species, Ri)) + geom_point() + ylab("Restrictedness") +
     scale_x_discrete(name = "Species", labels = NULL) +
@@ -127,7 +128,7 @@ diss <- as.data.frame(funrar.mat[[2]])
 # str(diss)
 # Compute mean distinctiveness with rowMeans
 diss$distinctiveness <- base::rowMeans(x = as.matrix(diss), na.rm = T)
-summary(diss$distinctiveness)
+# summary(diss$distinctiveness)
 diss$x <- na.omit(comm)[,"x"]
 diss$y <- na.omit(comm)[,"y"]
 # Map
@@ -143,7 +144,7 @@ ggplot() + geom_raster(aes(x = x, y = y, fill = distinctiveness), data = diss) +
 scar <- as.data.frame(funrar.mat[[4]])
 # Compute mean distinctiveness with rowMeans
 scar$scarcity <- base::rowMeans(x = as.matrix(scar), na.rm = T)
-summary(scar$scarcity)
+# summary(scar$scarcity)
 scar$x <- na.omit(comm)[,"x"]
 scar$y <- na.omit(comm)[,"y"]
 # Map
