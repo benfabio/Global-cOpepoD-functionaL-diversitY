@@ -9,6 +9,8 @@
 # - compute and map the monthly averages, and the SDM-specific predictions
 # - same but with P/A data
 
+### !!! BEWARE THIS PART OF THE ANALYSES WAS NOT KEPT FOR THE MANUSCRIPT !!!
+
 ### Latest update: 04/07/23
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,12 +26,12 @@ library("ggthemes")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 1) Load the tables of Faith's indices and compute ensemble averages and uncertainties around it
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/funrar/") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/funrar/") # dir() # should be of length 36
 files <- dir()[grep("funrar_baseline_",dir())]
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -177,9 +179,9 @@ tab$month <- factor(tab$month, months)
 tab$SDM <- factor(tab$SDM, c("GLM","GAM","ANN"))
 
 ### Quickly check distribution of Ui per months and SDM (shouldn't change too much)
-ggplot(data = tab, aes(x = factor(SDM), y = log10(Ui))) + geom_boxplot(fill = "gray") + xlab("SDM") + ylab("Functional uniqueness") + theme_bw() # good
+#ggplot(data = tab, aes(x = factor(SDM), y = log10(Ui))) + geom_boxplot(fill = "gray") + xlab("SDM") + ylab("Functional uniqueness") + theme_bw() # good
 # Per months
-ggplot(data = tab, aes(x = factor(month), y = log10(Ui))) + geom_boxplot(fill = "gray") + xlab("Month") + ylab("Functional uniqueness") + theme_bw() # good
+#ggplot(data = tab, aes(x = factor(month), y = log10(Ui))) + geom_boxplot(fill = "gray") + xlab("Month") + ylab("Functional uniqueness") + theme_bw() # good
 # good as well
 
 # Compute mean Ui and Ri per species and examine ranks and cor
@@ -188,11 +190,10 @@ avg <- data.frame( dat %>% group_by(species) %>% summarise(Ui = mean(Ui, na.rm =
 
 ### NOTE: not very informative based on HSI. Use the binary outputs instead...
 
-
 ### ------------------------------------------------------------------
 
 ### 3) Same as 1°, but based on the Distinctiveness values computed based on PA matrices
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/funrar/PA") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/funrar/PA") # dir() # should be of length 36
 files <- dir()[grep("funrar_baseline_",dir())]
 # f <- files[2]
 res <- mclapply(files, function(f) {
