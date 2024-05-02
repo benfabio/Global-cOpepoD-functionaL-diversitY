@@ -5,7 +5,7 @@
 
 ### Aims to:
 # - load and combine in a single data.frame the mean annual values of the various FD indices
-# - examine covariance/overlap
+# - examine covariance/overlap between FD indices
 
 ### Latest update: 11/08/23
 
@@ -22,7 +22,7 @@ library("ggthemes")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
 ### --------------------------------------------------------------------
 
 ### 1) Standardized FRic VS. Faith's index
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("_baseline_",dir())]
 #f <- files[1]
 res <- lapply(files, function(f) {
@@ -67,8 +67,7 @@ ann.faith <- data.frame(tab %>% group_by(cell_id) %>%
 #     scale_x_continuous(name = "", limits = c(-180,180), expand = c(0,0), labels = NULL) +
 #     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
-
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") 
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") 
 files <- dir()[grep("FDindices_baseline",dir())]
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -105,33 +104,33 @@ ann.ind.pa <- data.frame(tab %>% group_by(cell_id) %>%
 #     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 ann.faith$FRic <- ann.ind.pa$FRic.avg
-cor(ann.faith$mean.faith, ann.faith$FRic, method = "spearman") # 0.77
+#cor(ann.faith$mean.faith, ann.faith$FRic, method = "spearman") # 0.77
 # Standardize them by their max values
 ann.faith$Faith.std <- (ann.faith$mean.faith)/max(ann.faith$mean.faith, na.rm = T)
 ann.faith$FRic.std <- (ann.faith$FRic)/max(ann.faith$FRic, na.rm = T) # won't change the correlation coeff
 # Bi-plot
-ggplot(data = ann.faith, aes(x = Faith.std, y = FRic.std, colour = abs(y))) + geom_point() + scale_colour_viridis() + 
-    geom_smooth(colour = "red", method = "lm") + xlab("Mean annual Faith's index") + ylab("Mean annual FRic") + 
-    theme_classic()
+# ggplot(data = ann.faith, aes(x = Faith.std, y = FRic.std, colour = abs(y))) + geom_point() + scale_colour_viridis() + 
+#     geom_smooth(colour = "red", method = "lm") + xlab("Mean annual Faith's index") + ylab("Mean annual FRic") + 
+#     theme_classic()
     
 ### Fairly good correspondence
-summary(lm(FRic.std ~ Faith.std, data = ann.faith))
+#summary(lm(FRic.std ~ Faith.std, data = ann.faith))
 # Multiple R-squared:  0.604,    Adjusted R-squared:  0.604
 # F-statistic: 5.441e+04 on 1 and 35678 DF,  p-value: < 2.2e-16
 
 ### Per biome
 # Tropics
-cor(ann.faith[which(abs(ann.faith$y) < 30),"Faith.std"], ann.faith[which(abs(ann.faith$y) < 30),"FRic.std"], method = "spearman") # 0.94
-summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) < 30),])) # R-squared: 0.899
+#cor(ann.faith[which(abs(ann.faith$y) < 30),"Faith.std"], ann.faith[which(abs(ann.faith$y) < 30),"FRic.std"], method = "spearman") # 0.94
+#summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) < 30),])) # R-squared: 0.899
 
 # High latitudes
-cor(ann.faith[which(abs(ann.faith$y) > 60),"Faith.std"], ann.faith[which(abs(ann.faith$y) > 60),"FRic.std"], method = "spearman") # 0.875
-summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) > 60),])) # R-squared: 0.75
+#cor(ann.faith[which(abs(ann.faith$y) > 60),"Faith.std"], ann.faith[which(abs(ann.faith$y) > 60),"FRic.std"], method = "spearman") # 0.875
+#summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) > 60),])) # R-squared: 0.75
 
 # Temperate latitudes
-cor(ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),"Faith.std"], ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),"FRic.std"], method = "spearman")
+#cor(ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),"Faith.std"], ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),"FRic.std"], method = "spearman")
 # 0.76
-summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),])) # R-squared: 0.628
+#summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) < 60 & abs(ann.faith$y) > 30),])) # R-squared: 0.628
 
 # Departure from correlation outside the tropics because the GLM_bias in the high latitude FRic
 
@@ -139,7 +138,7 @@ summary(lm(FRic.std ~ Faith.std, data = ann.faith[which(abs(ann.faith$y) < 60 & 
 ### --------------------------------------------------------------------
 
 ### 2) PA_based FEve/RaoQ/FDis/FDiv VS. HSI-based FEve/RaoQ/FDis/FDiv
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")
 files <- dir()[grep("FDindices_baseline",dir())]
 # f <- files[2]
 res <- lapply(files, function(f) {
@@ -173,20 +172,20 @@ ann.ind.hsi$RaoQ.pa <- ann.ind.pa$RaoQ.avg
 ann.ind.hsi$FDiv.pa <- ann.ind.pa$FDiv.avg
 
 # Compute correlations coeff
-cor(ann.ind.hsi$FRic.pa, ann.ind.hsi$FRic.hsi, method = "spearman") # 0.30
-summary(lm(FRic.pa ~ FRic.hsi, data = ann.ind.hsi)) # R-squared:  0.075
+# cor(ann.ind.hsi$FRic.pa, ann.ind.hsi$FRic.hsi, method = "spearman") # 0.30
+# summary(lm(FRic.pa ~ FRic.hsi, data = ann.ind.hsi)) # R-squared:  0.075
 
-cor(ann.ind.hsi$FEve.pa, ann.ind.hsi$FEve.hsi, method = "spearman") # 0.61
-summary(lm(FEve.pa ~ FEve.hsi, data = ann.ind.hsi)) # R-squared:  0.298
+# cor(ann.ind.hsi$FEve.pa, ann.ind.hsi$FEve.hsi, method = "spearman") # 0.61
+# summary(lm(FEve.pa ~ FEve.hsi, data = ann.ind.hsi)) # R-squared:  0.298
 
-cor(ann.ind.hsi$FDis.pa, ann.ind.hsi$FDis.hsi, method = "spearman") # 0.87
-summary(lm(FDis.pa ~ FDis.hsi, data = ann.ind.hsi)) # R-squared:  0.655
+# cor(ann.ind.hsi$FDis.pa, ann.ind.hsi$FDis.hsi, method = "spearman") # 0.87
+# summary(lm(FDis.pa ~ FDis.hsi, data = ann.ind.hsi)) # R-squared:  0.655
 
-cor(ann.ind.hsi$RaoQ.pa, ann.ind.hsi$RaoQ.hsi, method = "spearman") # 0.77
-summary(lm(RaoQ.pa ~ RaoQ.hsi, data = ann.ind.hsi)) # R-squared:  0.579
+# cor(ann.ind.hsi$RaoQ.pa, ann.ind.hsi$RaoQ.hsi, method = "spearman") # 0.77
+# summary(lm(RaoQ.pa ~ RaoQ.hsi, data = ann.ind.hsi)) # R-squared:  0.579
 
-cor(ann.ind.hsi$FDiv.pa, ann.ind.hsi$FDiv.hsi, method = "spearman") # 0.28
-summary(lm(FDiv.pa ~ FDiv.hsi, data = ann.ind.hsi)) # R-squared:  0.104
+# cor(ann.ind.hsi$FDiv.pa, ann.ind.hsi$FDiv.hsi, method = "spearman") # 0.28
+# summary(lm(FDiv.pa ~ FDiv.hsi, data = ann.ind.hsi)) # R-squared:  0.104
 
 # Bi-plots
 p1 <- ggplot(data = ann.ind.hsi, aes(x = FRic.hsi, y = FRic.pa, colour = abs(y))) + geom_point() + 
@@ -208,17 +207,17 @@ ggarrange(p1,p2,p3,p4,p5, align = "hv", ncol = 3, nrow = 2)
 
 
 # Check FEve without and with tropics
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.pa"], method = "spearman") # 0.46
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.pa"], method = "spearman") # 0.47
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.pa"], method = "spearman") # 0.65
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.pa"], method = "spearman") # 0.67
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.pa"], method = "spearman") # 0.64
+# cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.pa"], method = "spearman") # 0.46
+# cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.pa"], method = "spearman") # 0.47
+# cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.pa"], method = "spearman") # 0.65
+# cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.pa"], method = "spearman") # 0.67
+# cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.pa"], method = "spearman") # 0.64
 # So, better if you remove latitudes lower than 60° but not that much
 
 ### --------------------------------------------------------------------
 
 ### 3) 'funrar' 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/funrar")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/funrar")
 files <- dir()[grep("funrar_baseline_",dir())]
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -245,7 +244,7 @@ ann.funrar.hsi <- data.frame(tab %>% group_by(cell_id) %>%
 )
 # dim(ann.funrar.hsi); summary(ann.funrar.hsi)
 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/funrar/PA") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/funrar/PA") # dir() # should be of length 36
 files <- dir()[grep("funrar_baseline_",dir())]
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -271,16 +270,16 @@ ann.funrar.pa <- data.frame(tab %>% group_by(cell_id) %>%
 )
 # dim(ann.funrar.pa); summary(ann.funrar.pa)
 
-# combine
+# Combine
 ann.funrar.hsi$mean.dist.pa <- ann.funrar.pa$mean.dist
 
 # check corr
-cor(ann.funrar.hsi$mean.dist.pa, ann.funrar.hsi$mean.dist, method = "spearman") # 0.97
-summary(lm(mean.dist.pa ~ mean.dist, data = ann.funrar.hsi)) # R-squared: 0.93
+#cor(ann.funrar.hsi$mean.dist.pa, ann.funrar.hsi$mean.dist, method = "spearman") # 0.97
+#summary(lm(mean.dist.pa ~ mean.dist, data = ann.funrar.hsi)) # R-squared: 0.93
 
-ggplot(data = ann.funrar.hsi, aes(x = mean.dist, y = mean.dist.pa, colour = abs(y))) + geom_point() + 
-    geom_smooth(colour = "red", method = "lm") + scale_colour_viridis(name = "Latitude", direction = -1) + 
-    theme_classic()
+# ggplot(data = ann.funrar.hsi, aes(x = mean.dist, y = mean.dist.pa, colour = abs(y))) + geom_point() + 
+#     geom_smooth(colour = "red", method = "lm") + scale_colour_viridis(name = "Latitude", direction = -1) + 
+#     theme_classic()
 
 ### Same with HSI or PA
 
