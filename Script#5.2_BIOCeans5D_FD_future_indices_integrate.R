@@ -24,7 +24,7 @@ library("marmap")
 world <- map_data("world") # coastlines for maps
 world2 <- map_data("world2") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
 # - FDiv (divergence) based on based on HSI data
 
 # Faith's and SR
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("2100-2000",dir())] # ; files # should be 180 files because: 12 months x 3SDMs x 5 ESMs
 # f <- files[5]
 res <- mclapply(files, function(f) {
@@ -89,7 +89,7 @@ ggplot() + geom_raster(aes(x = x2, y = y, fill = mean.rich), data = ann.sr.faith
 
 
 # SES Faith
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("2100-2000",dir())] #; files
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -138,7 +138,7 @@ ggplot() + geom_raster(aes(x = x2, y = y, fill = mean.ses), data = ann.ses.faith
 
 
 # B div indices (Jac/Jtu/Jne) 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div") # dir()
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div") # dir()
 files <- dir()[grep("2100-2000",dir())] #; files
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -167,8 +167,8 @@ ann.beta <- data.frame(tab %>% group_by(cell_id) %>%
         beta.ratio = mean(ratio, na.rm = T), beta.ratio.std = sd(ratio, na.rm = T)
     ) 
 ) # eo ddf
-dim(ann.beta); head(ann.beta)
-summary(ann.beta) 
+#dim(ann.beta); head(ann.beta)
+#summary(ann.beta) 
 
 # Rotate to -179.5/+179.5
 ann.beta$x2 <- ann.beta$x
@@ -183,9 +183,8 @@ ggplot() + geom_raster(aes(x = x2, y = y, fill = beta.ratio), data = ann.beta) +
      scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 
-
 ### Remaining indices
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
 files <- dir()[grep("2100-2000",dir())] #; files
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -210,8 +209,8 @@ ann.dbFD.prob <- data.frame(tab %>% group_by(cell_id) %>%
             RaoQ.avg = mean(RaoQ, na.rm = T), RaoQ.std = sd(RaoQ, na.rm = T),
             FDiv.avg = mean(FDiv, na.rm = T), FDiv.std = sd(FDiv, na.rm = T) )
 )
-dim(ann.dbFD.prob)
-summary(ann.dbFD.prob)
+#dim(ann.dbFD.prob)
+#summary(ann.dbFD.prob)
 
 # Rotate to -179.5/+179.5
 ann.dbFD.prob$x2 <- ann.dbFD.prob$x
