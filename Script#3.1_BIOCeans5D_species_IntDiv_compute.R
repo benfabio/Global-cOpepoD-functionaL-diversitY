@@ -16,6 +16,7 @@
 library("gawdis")
 library("FD")
 library("ape")
+library("vegan")
 library("tidyverse")
 library("reshape2")
 library("RColorBrewer")
@@ -25,10 +26,11 @@ library("parallel")
 library("xlsx")
 library("readxl")
 library("gtools")
+library("naniar")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -36,7 +38,6 @@ setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
 traits <- read.csv("traits_table_Benedetti2023.csv", h = T, sep = ";", dec = ",")
 colnames(traits)[8] <- "Body.length" # size vector that we will keep 
 # Replace "" by NA
-library("naniar")
 traits <- traits %>% replace_with_na_all(condition = ~.x == "")
 # Convert Feeding.mode, Trophic.group and Spawning.mode to factors
 traits$Spawning.mode <- as.factor(traits$Spawning.mode)
@@ -77,7 +78,6 @@ n_traits <- ncol(tab) - 1
 combi <- as.data.frame(t(combn(unique(n_traits), n_traits))) # empty ddf where all traits combin will be stored
 
 for(i in n_traits_min:n_traits-1) {
-  # i <- 6
   combi <- bind_rows(combi, as.data.frame(combinations(n = n_traits, r = i, v = seq(1, n_traits, 1), repeats.allowed = F)))
 } # eo for loop
 # nrow(combi) # 382 possible traits computations 
@@ -85,7 +85,6 @@ for(i in n_traits_min:n_traits-1) {
 # Get dissimilarity matrices
 # list_mat <- list()
 # i <- 300 # for testing gawdis
-
 ### Run into a mclapply (long otherwise)
 list_mat <- mclapply( c(1:nrow(combi)), function(i) {
     
@@ -141,7 +140,6 @@ colnames(IntDi)[2] <- "Species"
 #IntDi[IntDi$IntDi < .2,] # Why 0? 
 #IntDi[IntDi$IntDi > .4,] # 
 
-IntDi[order(IntDi$Species, decreasing = F),]
 
 ### Plot
 IntDi$Species <- factor(IntDi$Species, levels = IntDi[order(IntDi$IntDi),"Species"]) # 
@@ -158,25 +156,24 @@ traits_red2$IntDi <- IntDi$IntDi
 ggplot() + geom_point(aes(x = Body.length, y = IntDi), data = traits_red2[traits_red2$IntDi > 0,]) +
     ylab("Integrated distinctiveness (IntDi)") + xlab("Maximum body length (mm)") +
     theme_classic()
-cor(traits_red2$Body.length, traits_red2$IntDi, method = "spearman")
+#cor(traits_red2$Body.length, traits_red2$IntDi, method = "spearman")
 # 0.0328 # NS 
 
 
 ### ~ FG
-ggplot(aes(y = IntDi, x = factor(FG)), data = traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),]) + geom_boxplot(colour = "black", fill = "gray") +
-    ylab("Integrated distinctiveness (IntDi)") + xlab("FG (Benedetti et al., 2023)") +
-    theme_classic()
+#ggplot(aes(y = IntDi, x = factor(FG)), data = traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),]) + geom_boxplot(colour = "black", fill = "gray") +
+#    ylab("Integrated distinctiveness (IntDi)") + xlab("FG (Benedetti et al., 2023)") +
+#    theme_classic()
 ### --> FGs that show highest IntDiv: 2,5,1,4...then 3,6.
-unique(traits_red2[traits_red2$FG == 2,"Species"]) # Oncaeidae (only detritivores...)
-unique(traits_red2[traits_red2$FG == 5,"Species"]) # Very large carnivores
-unique(traits_red2[traits_red2$FG == 1,"Species"]) # Clausocalanus because of spawning...
-unique(traits_red2[traits_red2$FG == 4,"Species"]) # Small ambush carnivores (Corycaeus)
+#unique(traits_red2[traits_red2$FG == 2,"Species"]) # Oncaeidae (only detritivores...)
+#unique(traits_red2[traits_red2$FG == 5,"Species"]) # Very large carnivores
+#unique(traits_red2[traits_red2$FG == 1,"Species"]) # Clausocalanus because of spawning...
+#unique(traits_red2[traits_red2$FG == 4,"Species"]) # Small ambush carnivores (Corycaeus)
 # Most specialized taxa. Makes sense! Not your average copepod
 ### --> FGs that show LOWEST IntDiv: 9,10,11
-unique(traits_red2[traits_red2$FG == 9,"Species"]) # small-medium sized omnivores
-unique(traits_red2[traits_red2$FG == 10,"Species"]) # oithona
-unique(traits_red2[traits_red2$FG == 11,"Species"]) # Acartia/Centropages
-
+#unique(traits_red2[traits_red2$FG == 9,"Species"]) # small-medium sized omnivores
+#unique(traits_red2[traits_red2$FG == 10,"Species"]) # oithona
+#unique(traits_red2[traits_red2$FG == 11,"Species"]) # Acartia/Centropages
 
 ### ~ Order/Families
 ggplot(aes(y = IntDi, x = factor(Family)), data = traits_red2[traits_red2$IntDi > 0,]) + geom_boxplot(colour = "black", fill = "gray") +
@@ -214,7 +211,6 @@ ggplot(aes(y = IntDi, x = factor(Feeding.mode)), data = traits_red2[traits_red2$
 
 ### 4°) ~ 4 PCoA axes! (corr, plots)
 mat.gow <- gawdis(x = traits_red2[,c(8,9,10,12:15,17:19)], groups = c(1,2,3,4,4,4,4,5,5,5), fuzzy = c(4,5))
-library("vegan")
 pcoa2 <- wcmdscale(d = mat.gow, eig = T)
 pcoa.scores <- data.frame(pcoa2$points)
 scores1 <- paste0("PCoA 1 (",floor(pcoa2$eig[1]*100)/100,"%)")
@@ -229,10 +225,10 @@ IntDi$PCoA3 <- pcoa.scores$Dim3
 IntDi$PCoA4 <- pcoa.scores$Dim4
 # Test correlations
 
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA1"], method = "spearman"),3) # -0.279
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA2"], method = "spearman"),3) # 0.669
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA3"], method = "spearman"),3) # -0.053 N.S.
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA4"], method = "spearman"),3) # 0.261
+#round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA1"], method = "spearman"),3) # -0.279
+#round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA2"], method = "spearman"),3) # 0.669
+#round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA3"], method = "spearman"),3) # -0.053 N.S.
+#round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA4"], method = "spearman"),3) # 0.261
 # PCoA 2 seems to be the main axis of variation
 
 ggplot(aes(x = PCoA1, y = IntDi), data = IntDi[IntDi$IntDi > 0,]) + 
