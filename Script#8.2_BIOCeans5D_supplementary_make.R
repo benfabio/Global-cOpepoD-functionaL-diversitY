@@ -23,16 +23,14 @@ library("raster")
 world <- map_data("world") 
 world2 <- map_data("world2")
 
-setwd("/net/kryo/work/fabioben/GODLY/data")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data")
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 fd <- get(load("table_mean_ann_FD_indices_baseline+BCP+biom_22.11.23.RData"))
 
 ### 1) Faith ~ FRic; FDis ~ Rao's Q
-
 formula1 <- y~x # summary(lm)
-
 # p1 <- ggplot(fd[fd$FRic > 0.05,], aes(x = Faith, y = FRic, colour = abs(y))) +
 #   geom_point() + geom_smooth(colour = "black", method = "lm", formula = formula1) +
 #   scale_colour_gradientn(name = "Latitude", colours = rev(parula(100)), guide = "colourbar") +
@@ -45,7 +43,7 @@ p2 <- ggplot(fd, aes(x = FDis, y = RaoQ.scaled, colour = abs(y))) +
   stat_poly_eq(use_label(c("eq","adj.R2","P")), formula = formula1, label.y = "top", label.x = "left", size = 3) + 
   xlab("FDis") + ylab("Rao's Q (scaled)") + theme_bw()
 
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = p2, filename = "Fig.X_FdisxRaoQ_01.12.23.jpg", dpi = 300, width = 5, height = 4)
 
 #SM1 <- ggarrange(p1,p2, align = 'hv', ncol = 2, nrow = 1, labels = letters[1:2], common.legend = T)
@@ -182,7 +180,7 @@ m13 <- ggplot() + geom_raster(aes(x = x, y = y, fill = log10(FPOCex)), data = fd
     scale_x_continuous(name = "", limits = c(-180,180), expand = c(0,0), labels = NULL) +
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 panel1 <- ggarrange(m1,m2,m3,m4,m5,m6,m7,m8, ncol = 2, nrow = 4, align = "h", labels = letters)
 panel2 <- ggarrange(m10,m9,m12,m13,m11, ncol = 2, nrow = 3, align = "v", labels = letters[9:20])
 
@@ -338,7 +336,6 @@ pc3 <- ggplot() + geom_raster(aes(x = x, y = y, fill = PC3), data = data4pca) +
 panel.PCs <- ggarrange(pc1,pc2,pc3, ncol = 1, nrow = 3, align = "hv", labels = letters) # panel.PCs
 ggsave(plot = panel.PCs, filename = "Fig.X_panel_maps_PCs_27.11.23.jpg", dpi = 300, width = 6.5, height = 9)
 
-
 ### ------------------------------------------------------------------
 
 ### 4.1) Bivariate BEF plots with facet per clusters/regions
@@ -366,7 +363,7 @@ scaled.data4pca$k <- as.numeric(klusters)
 
 # For practical reasons, make a raster out of the clusters (alos with k = 5:8)
 library("raster")
-setwd("/net/kryo/work/fabioben/GODLY/data/clusters")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/clusters")
 maps <- lapply(c(2:8), function(k) {
     
         klusters <- cutree(space_clust, k = k)
@@ -400,7 +397,7 @@ maps <- lapply(c(2:8), function(k) {
 
 ) # eo lapply
 # length(maps) # OK    
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 library("ggpubr")
 panel <- ggarrange(maps[[1]],maps[[2]],maps[[3]],maps[[4]],maps[[5]],maps[[6]],maps[[7]], ncol = 2, nrow = 4, align = "hv", labels = letters) # panel.PCs
 ggsave(plot = panel, filename = "Fig.X_panel_maps_klusersk2-8_19.12.23.jpg", dpi = 300, width = 8, height = 15)
@@ -422,7 +419,7 @@ ggplot(data = fd[!is.na(fd$region),], aes(x = factor(region), y = abs(y))) +
      scale_y_continuous(breaks = seq(0,90,5)) + geom_violin(fill = "gray") +
      geom_boxplot(fill = "white", width = .2) + theme_bw()
 #
-round((summary(factor(fd[!is.na(fd$region),"region"]))/nrow(fd[!is.na(fd$region),]))*100,1)
+# round((summary(factor(fd[!is.na(fd$region),"region"]))/nrow(fd[!is.na(fd$region),]))*100,1)
 
 # Define the color palette for regions
 pal.clusters <- rev(parula(6)) # 1st colour is too bright --> adjust
@@ -476,7 +473,7 @@ p7 <- ggplot(fd2, aes(x = Jtu, y = MESOZOO, colour = factor(region) )) +
   xlab("Trait turnover") + ylab("Mesozooplankton biomass (mgC.m-3)") + theme_bw() + facet_wrap(.~factor(region), scales = "free")
 
 # Save
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = p1, filename = "Fig.X_facet_clusters_sr_biomass_28.11.23.jpg", dpi = 300, height = 8, width = 12)
 ggsave(plot = p2, filename = "Fig.X_facet_clusters_faith_biomass_28.11.23.jpg", dpi = 300, height = 8, width = 12)
 ggsave(plot = p3, filename = "Fig.X_facet_clusters_feve_biomass_28.11.23.jpg", dpi = 300, height = 8, width = 12)
@@ -493,144 +490,143 @@ ggsave(plot = p7, filename = "Fig.X_facet_clusters_jtu_biomass_28.11.23.jpg", dp
 ### 4.2.a) FaithxSR
 ### We've seen how FR scales with SR linearly:
 #summary(lm(Faith ~ SR, data = fd)) # R-squared:  0.536
-summary(lm(Faith ~ poly(SR,2), data = fd)) # R-squared: 0.57 
+#summary(lm(Faith ~ poly(SR,2), data = fd)) # R-squared: 0.57 
 
 # Now, astudy the impact of latitude on this linear relationship
 #summary(lm(Faith ~ SR*abs(y), data = fd)) # R2 = 0.802 # strong interactions between SR and latitude in driving Faith
-summary(lm(Faith ~ poly(SR,2)*abs(y), data = fd)) # R-squared: 0.875 instead of 0.57 
+#summary(lm(Faith ~ poly(SR,2)*abs(y), data = fd)) # R-squared: 0.875 instead of 0.57 
 # Increase of ((0.875-0.57)/0.57)*100 = 53.51%
 
 # Perform ANCOVA
-summary(aov(Faith ~ SR*abs(y), data = fd))
+#summary(aov(Faith ~ SR*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  894.7   894.7   96430 <2e-16 ***
 # abs(y)          1  327.7   327.7   35316 <2e-16 ***
 # SR:abs(y)       1  115.9   115.9   12488 <2e-16 ***
-mod1 <- aov(Faith ~ poly(SR,2), data = fd) 
-mod2 <- aov(Faith ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
+#mod1 <- aov(Faith ~ poly(SR,2), data = fd) 
+#mod2 <- aov(Faith ~ poly(SR,2)*abs(y), data = fd) 
+#anova(mod1,mod2)
 #    Res.Df  RSS Df Sum of Sq     F    Pr(>F)    
 #1   35677 719.25                                 
 #2   35674 207.36  3    511.89 29354 < 2.2e-16 ***
 
 
 ### 4.2.b) SESxSR
-summary(lm(SES.Faith ~ SR, data = fd)) # R2 = 0.59 
-summary(lm(SES.Faith ~ SR*abs(y), data = fd)) # R2 = 0.86 (instead of 0.59)
+#summary(lm(SES.Faith ~ SR, data = fd)) # R2 = 0.59 
+#summary(lm(SES.Faith ~ SR*abs(y), data = fd)) # R2 = 0.86 (instead of 0.59)
 # Increase of ((0.86-0.59)/0.59)*100 = 45.76%
-summary(aov(SES.Faith ~ SR*abs(y), data = fd))
+#summary(aov(SES.Faith ~ SR*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  58552   58552  150798 <2e-16 ***
 # abs(y)          1  22872   22872   58906 <2e-16 ***
 # SR:abs(y)       1   3268    3268    8416 <2e-16 ***
 # Residuals   35676  13852       0 
-mod1 <- aov(SES.Faith ~ SR, data = fd) 
-mod2 <- aov(SES.Faith ~ SR*abs(y), data = fd) 
-anova(mod1,mod2)
+# mod1 <- aov(SES.Faith ~ SR, data = fd) 
+# mod2 <- aov(SES.Faith ~ SR*abs(y), data = fd) 
+# anova(mod1,mod2)
 
 
 ### 4.2.c) FEve x SR
-summary(lm(FEve ~ SR, data = fd)) # 0.5547 
-summary(lm(FEve ~ SR*abs(y), data = fd)) # R2 = 0.76 (instead of 0.55)
+#summary(lm(FEve ~ SR, data = fd)) # 0.5547 
+#summary(lm(FEve ~ SR*abs(y), data = fd)) # R2 = 0.76 (instead of 0.55)
 # Increase of ((0.76-0.5547)/0.5547)*100 = 37.011%
-summary(aov(FEve ~ SR*abs(y), data = fd))
+#summary(aov(FEve ~ SR*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  96.03   96.03   81395 <2e-16 ***
 # abs(y)          1   4.41    4.41    3737 <2e-16 ***
 # SR:abs(y)       1  30.58   30.58   25919 <2e-16 ***
 # Residuals   35676  42.09    0.00          
-mod1 <- aov(FEve ~ SR, data = fd) 
-mod2 <- aov(FEve ~ SR*abs(y), data = fd) 
-anova(mod1,mod2)
+# mod1 <- aov(FEve ~ SR, data = fd) 
+# mod2 <- aov(FEve ~ SR*abs(y), data = fd) 
+# anova(mod1,mod2)
 
 
 ### 4.2.d) FDis x SR
-summary(lm(FDis ~ poly(SR,2), data = fd)) # R2 = 0.7438
-summary(lm(FDis ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.7959 
+#summary(lm(FDis ~ poly(SR,2), data = fd)) # R2 = 0.7438
+#summary(lm(FDis ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.7959 
 # Increase of ((0.7959-0.7438)/0.7438)*100 = 7.00%
-summary(aov(FDis ~ poly(SR,2)*abs(y), data = fd))
+#summary(aov(FDis ~ poly(SR,2)*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1 1.2903  1.2903  104154 <2e-16 ***
 # abs(y)          1 0.0404  0.0404    3264 <2e-16 ***
 # SR:abs(y)       1 0.0828  0.0828    6681 <2e-16 ***
 # Residuals   35676 0.4420  0.0000 
-mod1 <- aov(FDis ~ poly(SR,2), data = fd) 
-mod2 <- aov(FDis ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
+# mod1 <- aov(FDis ~ poly(SR,2), data = fd) 
+# mod2 <- aov(FDis ~ poly(SR,2)*abs(y), data = fd) 
+# anova(mod1,mod2)
 
 
 ### 4.2.e) FDiv x SR
-summary(lm(FDiv ~ poly(SR,2), data = fd)) # R2 = 0.67
-summary(lm(FDiv ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.85
+#summary(lm(FDiv ~ poly(SR,2), data = fd)) # R2 = 0.67
+#summary(lm(FDiv ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.85
 # Increase of ((0.85-0.67)/0.67)*100 = 26.86%
-summary(aov(FDiv ~ SR*abs(y), data = fd))
+#summary(aov(FDiv ~ SR*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  3.283   3.283  129856 <2e-16 ***
 # abs(y)          1  1.051   1.051   41587 <2e-16 ***
 # SR:abs(y)       1  0.057   0.057    2267 <2e-16 ***
 # Residuals   35676  0.902   0.000  
-mod1 <- aov(FDiv ~ poly(SR,2), data = fd) 
-mod2 <- aov(FDiv ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
+# mod1 <- aov(FDiv ~ poly(SR,2), data = fd) 
+# mod2 <- aov(FDiv ~ poly(SR,2)*abs(y), data = fd) 
+# anova(mod1,mod2)
 
 
 ### 4.2.f) Jac x SR
-summary(lm(Jac ~ poly(SR,2), data = fd)) # R2 = 0.94
-summary(lm(Jac ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.95
+#summary(lm(Jac ~ poly(SR,2), data = fd)) # R2 = 0.94
+#summary(lm(Jac ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.95
 # Increase of ((0.95-0.94)/0.94)*100 = 1.06%
-summary(aov(Jac ~ SR*abs(y), data = fd))
+#summary(aov(Jac ~ SR*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  98.13   98.13  485910 <2e-16 ***
 # abs(y)          1   2.61    2.61   12938 <2e-16 ***
 # SR:abs(y)       1   3.72    3.72   18405 <2e-16 ***
 # Residuals   35676   7.20    0.00   
-mod1 <- aov(Jac ~ poly(SR,2), data = fd) 
-mod2 <- aov(Jac ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
+#mod1 <- aov(Jac ~ poly(SR,2), data = fd) 
+#mod2 <- aov(Jac ~ poly(SR,2)*abs(y), data = fd) 
+#anova(mod1,mod2)
 
 
 ### 4.2.g) Jtu x SR
-summary(lm(Jtu ~ poly(SR,2), data = fd)) # R2 = 0.85
-summary(lm(Jtu ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.93
+#summary(lm(Jtu ~ poly(SR,2), data = fd)) # R2 = 0.85
+#summary(lm(Jtu ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.93
 # Increase of ((0.93-0.85)/0.85)*100 = 9.41%
-summary(aov(Jtu ~ SR*abs(y), data = fd))
+#summary(aov(Jtu ~ SR*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  70.12   70.12  435596 <2e-16 ***
 # abs(y)          1   6.97    6.97   43294 <2e-16 ***
 # SR:abs(y)       1   4.62    4.62   28695 <2e-16 ***
 # Residuals   35676   5.74    0.00 
-mod1 <- aov(Jtu ~ poly(SR,2), data = fd) 
-mod2 <- aov(Jtu ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
+#mod1 <- aov(Jtu ~ poly(SR,2), data = fd) 
+#mod2 <- aov(Jtu ~ poly(SR,2)*abs(y), data = fd) 
+#anova(mod1,mod2)
 
 
 ### 4.2.h) Jne x SR
-summary(lm(Jne ~ poly(SR,2), data = fd)) # R2 = 0.2632
-summary(lm(Jne ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.5101
+#summary(lm(Jne ~ poly(SR,2), data = fd)) # R2 = 0.2632
+#summary(lm(Jne ~ poly(SR,2)*abs(y), data = fd)) # R2 = 0.5101
 # Increase of ((0.5101-0.2632)/0.2632)*100 = 93.81%
-summary(aov(Jne ~ SR*abs(y), data = fd))
+#summary(aov(Jne ~ SR*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # SR              1  2.446  2.4461 11808.1 <2e-16 ***
 # abs(y)          1  0.986  0.9856  4757.7 <2e-16 ***
 # SR:abs(y)       1  0.027  0.0271   130.9 <2e-16 ***
 # Residuals   35676  7.390  0.0002  
-mod1 <- aov(Jne ~ poly(SR,2), data = fd) 
-mod2 <- aov(Jne ~ poly(SR,2)*abs(y), data = fd) 
-anova(mod1,mod2)
-
+#mod1 <- aov(Jne ~ poly(SR,2), data = fd) 
+#mod2 <- aov(Jne ~ poly(SR,2)*abs(y), data = fd) 
+#anova(mod1,mod2)
 
 
 ### With mesozooplankton biomass
 # SR
-summary(lm(MESOZOO ~ SR, data = fd)) # R2 = 0.46 
-summary(lm(MESOZOO ~ SR*abs(y), data = fd)) # R2 = 0.50 
+#summary(lm(MESOZOO ~ SR, data = fd)) # R2 = 0.46 
+#summary(lm(MESOZOO ~ SR*abs(y), data = fd)) # R2 = 0.50 
 # ((0.50-0.46)/0.46)*100 = 8.7% 
 
 # Faith
-summary(lm(MESOZOO ~ Faith, data = fd)) # R2 = 0.43
-summary(lm(MESOZOO ~ Faith*abs(y), data = fd)) # R2 = 0.58
+#summary(lm(MESOZOO ~ Faith, data = fd)) # R2 = 0.43
+#summary(lm(MESOZOO ~ Faith*abs(y), data = fd)) # R2 = 0.58
 # ((0.58-0.43)/0.43)*100 = 34.9%
-summary(aov(MESOZOO ~ Faith*abs(y), data = fd))
+#summary(aov(MESOZOO ~ Faith*abs(y), data = fd))
 #                 Df Sum Sq Mean Sq F value Pr(>F)    
 # Faith            1  21725   21725   34902 <2e-16 ***
 # abs(y)           1   2121    2121    3408 <2e-16 ***
@@ -638,33 +634,33 @@ summary(aov(MESOZOO ~ Faith*abs(y), data = fd))
 # Residuals    34544  21502       1   
 
 # FEve
-summary(lm(MESOZOO ~ FEve, data = fd)) # R2 = 0.1839 
-summary(lm(MESOZOO ~ FEve*abs(y), data = fd)) # R2 = 0.1866 
+#summary(lm(MESOZOO ~ FEve, data = fd)) # R2 = 0.1839 
+#summary(lm(MESOZOO ~ FEve*abs(y), data = fd)) # R2 = 0.1866 
 # ((0.1866-0.1839)/0.1839)*100 = 1.5%
 # mod1 <- aov(MESOZOO ~ FEve, data = fd) 
 # mod2 <- aov(MESOZOO ~ FEve*abs(y), data = fd) 
 # anova(mod1,mod2)
 
 # FDis
-summary(lm(MESOZOO ~ FDis, data = fd)) # R2 = 0.62
-summary(lm(MESOZOO ~ FDis*abs(y), data = fd)) # R2 = 0.66
+#summary(lm(MESOZOO ~ FDis, data = fd)) # R2 = 0.62
+#summary(lm(MESOZOO ~ FDis*abs(y), data = fd)) # R2 = 0.66
 # ((0.66-0.62)/0.62)*100 = 6.45%
 #mod1 <- aov(MESOZOO ~ FDis, data = fd) 
 #mod2 <- aov(MESOZOO ~ FDis*abs(y), data = fd) 
 #anova(mod1,mod2)
 
 # FDiv
-summary(lm(MESOZOO ~ FDiv, data = fd)) # R2 = 0.1634 
-summary(lm(MESOZOO ~ FDiv*abs(y), data = fd)) # R2 = 0.2737
+#summary(lm(MESOZOO ~ FDiv, data = fd)) # R2 = 0.1634 
+#summary(lm(MESOZOO ~ FDiv*abs(y), data = fd)) # R2 = 0.2737
 # ((0.2737-0.1634)/0.1634)*100 = 67.5%
 
 
 # Jac
-summary(lm(MESOZOO ~ Jac, data = fd)) # R2 = 0.4792
-summary(lm(MESOZOO ~ Jac*abs(y), data = fd)) # R2 = 0.5939 
+#summary(lm(MESOZOO ~ Jac, data = fd)) # R2 = 0.4792
+#summary(lm(MESOZOO ~ Jac*abs(y), data = fd)) # R2 = 0.5939 
 # ((0.5939-0.4792)/0.4792)*100 = 23.9%
 
-summary(aov(MESOZOO ~ Jac*abs(y), data = fd))
+#summary(aov(MESOZOO ~ Jac*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # Jac             1  24511   24511   40770 <2e-16 ***
 # abs(y)          1   4791    4791    7968 <2e-16 ***
@@ -672,9 +668,9 @@ summary(aov(MESOZOO ~ Jac*abs(y), data = fd))
 # Residuals   34544  20768       1  
 
 # Jtu
-summary(lm(MESOZOO ~ Jtu, data = fd)) # R2 = 0.41
-summary(lm(MESOZOO ~ Jtu*abs(y), data = fd)) # R2 = 0.56
-summary(aov(MESOZOO ~ Jtu*abs(y), data = fd))
+#summary(lm(MESOZOO ~ Jtu, data = fd)) # R2 = 0.41
+#summary(lm(MESOZOO ~ Jtu*abs(y), data = fd)) # R2 = 0.56
+#summary(aov(MESOZOO ~ Jtu*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # Jtu             1  20884   20884   31963 <2e-16 ***
 # abs(y)          1   6449    6449    9870 <2e-16 ***
@@ -682,9 +678,9 @@ summary(aov(MESOZOO ~ Jtu*abs(y), data = fd))
 # Residuals   34544  22570       1    
 
 # Jne
-summary(lm(MESOZOO ~ Jne, data = fd)) # R2 = 0.16
-summary(lm(MESOZOO ~ Jne*abs(y), data = fd)) # R2 = 0.31
-summary(aov(MESOZOO ~ Jne*abs(y), data = fd))
+#summary(lm(MESOZOO ~ Jne, data = fd)) # R2 = 0.16
+#summary(lm(MESOZOO ~ Jne*abs(y), data = fd)) # R2 = 0.31
+#summary(aov(MESOZOO ~ Jne*abs(y), data = fd))
 #                Df Sum Sq Mean Sq F value Pr(>F)    
 # Jne             1   8208    8208    8082 <2e-16 ***
 # abs(y)          1   3530    3530    3476 <2e-16 ***
@@ -698,7 +694,7 @@ summary(aov(MESOZOO ~ Jne*abs(y), data = fd))
 ### 18/04/24: Same but adding relative standard deviation in the summarize()
 
 # 5.1) Faith's and SR
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("baseline",dir())] ; files
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -727,7 +723,7 @@ var.sr.faith <- data.frame(mon.sr.faith %>% group_by(cell_id) %>%
 )
 
 # 5.2) SES Faith
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("baseline",dir())] ; files
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -757,7 +753,7 @@ var.ses <- data.frame(mon.ses %>% group_by(cell_id) %>%
 
 
 # 5.3) Beta div indices (Jac/Jtu/Jne) 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
 files <- dir()[grep("baseline",dir())]
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -791,7 +787,7 @@ var.beta <- data.frame(mon.beta %>% group_by(cell_id) %>%
 
 
 # 5.4) dbFD indices
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
 files <- dir()[grep("_baseline",dir())]
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -905,7 +901,7 @@ map9 <- ggplot() + geom_raster(aes(x = x, y = y, fill = rel.sd.jne), data = var.
     scale_x_continuous(name = "", limits = c(-180,180), expand = c(0,0), labels = NULL) +
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 figX <- ggarrange(map1,map2,map4,map5,map6,map7,map8,map9, align = 'hv', ncol = 2, nrow = 4, labels = letters)
 #ggsave(plot = figX, filename = "Fig.X_map_sd_monthly_fd_indices_19.12.23.jpg", dpi = 300, width = 12, height = 12)
 #ggsave(plot = figX, filename = "Fig.X_map_sd_monthly_fd_indices_27.11.23.pdf", dpi = 300, width = 16.5, height = 7)
@@ -918,7 +914,7 @@ ggsave(plot = figX, filename = "Fig.X_map_relative_sd_monthly_fd_indices_18.04.2
 ### Re-use the same code generated above
 
 # 6.1) Faith's and SR
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("baseline",dir())] 
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -947,7 +943,7 @@ var.sr.faith <- data.frame(mon.sr.faith %>% group_by(cell_id) %>%
 )
 
 # 6.2) SES Faith
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("baseline",dir())] 
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -978,7 +974,7 @@ var.ses <- data.frame(mon.ses %>% group_by(cell_id) %>%
 )
 
 # 6.3) Beta div indices (Jac/Jtu/Jne) 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
 files <- dir()[grep("baseline",dir())]
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -1010,7 +1006,7 @@ var.beta <- data.frame(mon.beta %>% group_by(cell_id) %>%
 )
 
 # 6.4) dbFD indices
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/")
 files <- dir()[grep("_baseline",dir())]
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -1124,7 +1120,7 @@ map9 <- ggplot() + geom_raster(aes(x = x, y = y, fill = sd.jne), data = var.beta
     scale_x_continuous(name = "", limits = c(-180,180), expand = c(0,0), labels = NULL) +
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 figX <- ggarrange(map1,map2,map3,map4,map5,map6,map7,map8,map9, align = 'hv', ncol = 2, nrow = 5, labels = letters)
 ggsave(plot = figX, filename = "Fig.X_map_sd_SDM_fd_indices_19.12.23.jpg", dpi = 300, width = 12, height = 12)
 #ggsave(plot = figX, filename = "Fig.X_map_sd_SDM_fd_indices_27.11.23.pdf", dpi = 300, width = 16.5, height = 7)
@@ -1142,13 +1138,13 @@ res <- lapply(indices, function(i) {
     message(paste("\n","Calculating ∆ values for ",i,"\n", sep = ""))
     
     if(i %in% c("SR","FR")) {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
     } else if (i == "SES.FR") {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
     } else if (i %in% c("Jac","Jne","Jtu")) {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
     } else {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
     } # eo 1st if else loop
 
     # Vector files of interest
@@ -1220,7 +1216,7 @@ res <- lapply(indices, function(i) {
 ) #  eo lapply
 
 # Arrange on grid
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 figX <- ggarrange(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]],res[[6]],res[[7]],res[[8]], align = "hv", ncol = 2, nrow = 4, labels = letters)
 ggsave(plot = figX, filename = "Fig.X_map_sd_future_indices_19.12.23.jpg", dpi = 300, width = 12, height = 10)
 #ggsave(plot = figX, filename = "Fig.X_map_sd_future_indices_27.11.23.pdf", dpi = 300, width = 12, height = 10) # does not return the '∆'
@@ -1237,13 +1233,13 @@ res <- lapply(indices, function(i) {
     message(paste("\n","Calculating ∆ values for ",i,"\n", sep = ""))
     
     if(i %in% c("SR","FR")) {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
     } else if (i == "SES.FR") {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
     } else if (i %in% c("Jac","Jne","Jtu")) {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
     } else {
-        setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
+        setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
     } # eo 1st if else loop
 
     files <- dir()[grep(i,dir())]
@@ -1322,7 +1318,7 @@ res <- lapply(indices, function(i) {
 ) #  eo lapply
 
 # Arrange on grid
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 figX <- ggarrange(res[[1]],res[[2]],res[[3]],res[[4]],res[[5]],res[[6]],res[[7]],res[[8]], align = "hv", ncol = 2, nrow = 4, labels = letters)
 ggsave(plot = figX, filename = "Fig.X_map_∆_agreement_12.01.24.jpg", dpi = 300, width = 12, height = 10)
 
@@ -1330,7 +1326,7 @@ ggsave(plot = figX, filename = "Fig.X_map_∆_agreement_12.01.24.jpg", dpi = 300
 ### ------------------------------------------------------------------
 
 ### 8) Maps of p-value distributions for SES Faith; map of future SES Faith pattern to show consistency
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("baseline",dir())] ; files
 # f <- files[2]
 res <- mclapply(files, function(f) {
@@ -1348,7 +1344,7 @@ colnames(tab)[1] <- "SR"
 colnames(tab)[2] <- "FR"
 
 # Report basic statistics of 'pd.obs.p'
-median(tab$pd.obs.p); IQR(tab$pd.obs.p)
+#median(tab$pd.obs.p); IQR(tab$pd.obs.p)
 
 distrib1 <- ggplot(tab, aes(pd.obs.p)) + geom_density(position = "stack", fill = 'grey') + 
      geom_vline(xintercept = .05, colour = "red", linetype = "dashed") +
@@ -1395,7 +1391,7 @@ map1 <- ggplot() + geom_raster(aes(x = x, y = y, fill = freq.pval), data = ann.s
 
 
 ### Check how plots change for future conditions?
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
 files <- dir()[grep("2100-2000",dir())]
 # f <- files[1]
 res <- mclapply(files, function(f) {
@@ -1461,7 +1457,7 @@ map2 <- ggplot() + geom_raster(aes(x = x, y = y, fill = freq.pval), data = fut.s
 panel.maps <- ggarrange(map1,map2, align = "hv", ncol = 1, nrow = 2, labels = letters)
 
 ### Save plots 
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 ggsave(plot = panel.maps, filename = "Fig.X_maps_freq.pval_ses.faith_28_11_23.jpg", dpi = 300, width = 8, height = 6)
 ggsave(plot = panel.distrib, filename = "Fig.X_panel_freq.pval_ses.faith_28_11_23.jpg", dpi = 300, width = 7, height = 10)
 ggsave(plot = panel.fut.distrib, filename = "Fig.X_panel_fut_freq.pval_ses.faith_28_11_23.jpg", dpi = 300, width = 7, height = 10)
@@ -1477,13 +1473,13 @@ res <- lapply(indices, function(i) {
         message(paste("\n","Mapping ∆",i,"\n", sep = ""))
     
         if(i %in% c("SR","FR")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
         } else if (i == "SES.FR") {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
         } else if (i %in% c("Jac","Jne","Jtu")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
         } else {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
         } # eo 1st if else loop
     
         # Vector files of interest
@@ -1521,7 +1517,7 @@ ddf <- bind_rows(res)
 rm(res); gc()
 
 ### Load the raster containing the 6 regions and extract at ddf position
-setwd("/net/kryo/work/fabioben/GODLY/data/clusters")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/clusters")
 ras <- get(load("raster_clusters_ward_k6_28.11.23.RData"))
 ddf$region <- extract(ras, ddf[,c("x","y")])
 ddf2 <- ddf %>% drop_na(region)
@@ -1546,7 +1542,7 @@ plot <- ggplot(ddf2[which(ddf2$mean < 1),], aes(x = factor(region), y = mean*100
     xlab("Regions") + ylab("Average % difference (2100-2012)") + 
     facet_wrap(.~factor(index), scales = "free", nrow = 4)
 
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 ggsave(plot = plot, filename = "Fig.X_facet_deltas_fd_regions_k6_28.11.23.jpg", width = 7, height = 10, dpi = 300)
 ggsave(plot = plot, filename = "Fig.X_facet_deltas_fd_regions_k6_28.11.23.pdf", width = 7, height = 10, dpi = 300)
 
@@ -1588,7 +1584,7 @@ pairwise.wilcox.test(dat$mean, factor(dat$region), p.adjust.method = "bonferroni
 ### ------------------------------------------------------------------
 
 ### 10) Boxplots to support Fig 5: main differences across regions
-setwd("/net/kryo/work/fabioben/GODLY/data/clusters")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/clusters")
 ras <- get(load("raster_clusters_ward_k6_28.11.23.RData"))
 fd$region <- extract(ras, fd[,c("x","y")])
 fd2 <- fd %>% drop_na(region)
@@ -1660,7 +1656,7 @@ b7 <- ggplot(dat.extra, aes(x = factor(region), y = log10(MESOZOO), fill = facto
 # Assemble in panel and save
 panel <- ggarrange(b3,b4,b5,b7,b2,b6,b1, ncol = 2, nrow = 4, align = "hv", labels = letters)
 
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 ggsave(plot = panel, filename = "Fig.X_panel_boxplots_tropical_regions_29.11.23.jpg", height = 12, width = 7, dpi = 300)
 
 
@@ -1710,14 +1706,11 @@ ggsave(plot = panel, filename = "Fig.X_panel_boxplots_extratropical_regions_29.1
 ### ------------------------------------------------------------------
 
 ### 11) IntDi distribution & variations across FGs from Benedetti et al. (2023); + relationship with shift metrics
-
-setwd("/net/kryo/work/fabioben/GODLY/data")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data")
 
 ### 11.1) Examine Intdi distribution per copepod species and per FG
-
 traits <- read.csv("traits_table_Benedetti2023.csv", h = T, sep = ";", dec = ",")
 colnames(traits)[8] <- "Body.length" 
-
 require("naniar")
 traits <- traits %>% replace_with_na_all(condition = ~.x == "")
 traits$Spawning.mode <- as.factor(traits$Spawning.mode)
@@ -1752,7 +1745,6 @@ mean_matrix_gaw <- Reduce("+",list_mat)/length(list_mat)
 IntDi <- apply(mean_matrix_gaw, 1, sum, na.rm = T) / (nrow(mean_matrix_gaw) + 1)
 IntDi <- cbind(as.data.frame(IntDi), traits_red2$Species)
 colnames(IntDi)[2] <- "Species"
-# summary(IntDi)
 IntDi[order(IntDi$IntDi, decreasing = T),]
 # IntDi[IntDi$IntDi < .2,] # Why 0? 
 # Fix values == 0 ?
@@ -1774,11 +1766,11 @@ b <- ggplot(aes(y = IntDi, x = factor(FG)), data = traits_red2[traits_red2$IntDi
     xlab("Copepod FG (Benedetti et al., 2022)") + theme_classic()
 
 panel <- ggarrange(a,b, ncol = 1, nrow = 2, align = "hv", labels = letters)
-setwd("/net/kryo/work/fabioben/GODLY/plots") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots") # working dir
 ggsave(plot = panel, filename = "Fig.X_panel_IntDi_distrib_FGs_29.11.23.jpg", height = 7, width = 5)
 
 ### Test 
-pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"IntDi"], traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"], p.adjust.method = "bonferroni", paired = F)
+#pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"IntDi"], traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"], p.adjust.method = "bonferroni", paired = F)
 #    1       2       3       4       5       6       7       8       9      
 # 2  0.00024 -       -       -       -       -       -       -       -
 # 3  0.09376 2.4e-07 -       -       -       -       -       -       -
@@ -1817,10 +1809,10 @@ IntDi$PCoA2 <- pcoa.scores$Dim2
 IntDi$PCoA3 <- pcoa.scores$Dim3
 IntDi$PCoA4 <- pcoa.scores$Dim4
 
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA1"], method = "spearman"),3) # -0.279
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA2"], method = "spearman"),3) # 0.669
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA3"], method = "spearman"),3) # -0.053 N.S.
-round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA4"], method = "spearman"),3) # 0.261
+# round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA1"], method = "spearman"),3) # -0.279
+# round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA2"], method = "spearman"),3) # 0.669
+# round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA3"], method = "spearman"),3) # -0.053 N.S.
+# round(cor(IntDi[IntDi$IntDi > 0,"IntDi"], IntDi[IntDi$IntDi > 0,"PCoA4"], method = "spearman"),3) # 0.261
 # PCoA 2 seems to be the main axis of variation
 
 plot <- ggplot(data=IntDi[IntDi$IntDi > 0,], aes(x = PCoA2, y = IntDi)) +
@@ -1848,16 +1840,14 @@ p2 <- ggplot(aes(x = PCoA3, y = PCoA4), data = IntDi[IntDi$IntDi > 0,]) +
     theme_bw() + xlab(scores3) + ylab(scores4)+ guides(alpha = "none")
 
 pcoa.plot <- ggarrange(p1,p2, labels = letters, align = "hv", ncol = 2, nrow = 1)
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 ggsave(plot = pcoa.plot, filename = "Fig.X_PCoA+IntDi_01.12.23.jpg", dpi = 300, height = 4, width = 10)
 ggsave(plot = pcoa.plot, filename = "Fig.X_PCoA+IntDi_01.12.23.pdf", dpi = 300, height = 4, width = 10)
-
 ggsave(plot = plot, filename = "Fig.X_IntDixPCoA.2_01.12.23.jpg", dpi = 300, height = 3, width = 4)
 
 
-
 ### 11.2) Examine covariance between IntDi index and intensity of shift metrics
-setwd("/net/kryo/work/fabioben/GODLY/data/shift_metrics")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/shift_metrics")
 res <- lapply(dir()[grep("contemp",dir())], function(f) { d <- get(load(f)) ; return(d) })
 base <- dplyr::bind_rows(res); rm(res); gc()
 
@@ -1925,16 +1915,15 @@ ggplot(aes(y = mean.shift, x = factor(FG)), data = traits_red2[traits_red2$IntDi
     theme_classic()
 ### --> all medians kind of overlap with IQR; no strong variance in shifts per known FG
 
-pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"mean.shift"],
-    traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"],
-    p.adjust.method = "bonferroni", paired = F)
-# n.s. 
-
+# pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"mean.shift"],
+#     traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"],
+#     p.adjust.method = "bonferroni", paired = F)
+# # n.s. 
 
 
 ### 11.3) Same as above, but based on changes in HSI. Examine Global/NH/SH separately
 
-setwd("/net/kryo/work/fabioben/GODLY/data/shift_metrics")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/shift_metrics")
 res <- lapply(dir()[grep("contemp_mean_ann_hsi",dir())], function(f) { d <- get(load(f)) ; return(d) })
 base <- dplyr::bind_rows(res); rm(res); gc()
 
@@ -1979,8 +1968,8 @@ for(s in unique(ens.changes$species)) {
 # Examine covariance
 ggplot(data = traits_red2[traits_red2$IntDi > 0,], aes(x = IntDi, y = mean.ch)) + geom_point() + theme_bw()
 df <- traits_red2 %>% filter(!(is.na(mean.ch)))
-cor(df$IntDi, df$mean.ch, method = "spearman") # -0.03 Globally; -0.04 for the NH only; -0.06 for the SH only
-summary(lm(IntDi ~ mean.ch, data = df)) # Adjusted R-squared: 0.008; N.S.
+#cor(df$IntDi, df$mean.ch, method = "spearman") # -0.03 Globally; -0.04 for the NH only; -0.06 for the SH only
+#summary(lm(IntDi ~ mean.ch, data = df)) # Adjusted R-squared: 0.008; N.S.
 # No relationship
 
 # No signif. trend; Plot distrib of shifts per FG (boxplots)
@@ -1989,9 +1978,9 @@ ggplot(aes(y = mean.ch, x = factor(FG)), data = traits_red2[traits_red2$IntDi > 
     theme_classic()
 ### --> all medians kind of overlap with IQR; no strong variance in shifts per known FG
 
-pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"mean.ch"],
-    traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"],
-    p.adjust.method = "bonferroni", paired = F)
+# pairwise.wilcox.test(traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"mean.ch"],
+#     traits_red2[traits_red2$IntDi > 0 & !is.na(traits_red2$FG),"FG"],
+#     p.adjust.method = "bonferroni", paired = F)
 # n.s. 
 
 
@@ -2006,7 +1995,7 @@ library("gawdis")
 library("FD")
 library("naniar")
 
-setwd("/net/kryo/work/fabioben/GODLY/data") 
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") 
 
 traits <- read.csv("traits_table_Benedetti2023.csv", h = T, sep = ";", dec = ",")
 colnames(traits)[8] <- "Body.length" 
@@ -2071,7 +2060,7 @@ plot <- ggplot(data = table, aes(x = n, y = AUC1)) + geom_point(colour = "black"
   geom_vline(xintercept = 4, colour = "red") + xlab("Number of PCoA dimensions") + 
   ylab("Quality of traits space (AUC)") + theme_bw()
 
-setwd("/net/kryo/work/fabioben/GODLY/plots") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots") # working dir
 ggsave(plot = plot, filename = "Fig.X_AUC_PCoA_dimensions_29.11.23.jpg", height = 3, width = 4)
 
 
@@ -2082,7 +2071,7 @@ ggsave(plot = plot, filename = "Fig.X_AUC_PCoA_dimensions_29.11.23.jpg", height 
 ### Re-using Script#4.1
 
 ### 13.1) Comparing mean annual Faith x mean annual FRic (standardized this time) - both indices base don PA data 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
 files <- dir()[grep("_baseline_",dir())]
 #f <- files[1]
 res <- lapply(files, function(f) {
@@ -2105,7 +2094,7 @@ ann.faith <- data.frame(tab %>% group_by(cell_id) %>%
 )
 # dim(ann.faith) ; summary(ann.faith)
 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") 
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") 
 files <- dir()[grep("FDindices_baseline",dir())]
 res <- lapply(files, function(f) {
             d <- get(load(f))
@@ -2142,7 +2131,7 @@ ann.ind.pa <- data.frame(tab %>% group_by(cell_id) %>%
 #      scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 ann.faith$FRic <- ann.ind.pa$FRic.avg
-cor(ann.faith$mean.faith, ann.faith$FRic, method = "spearman") # 0.772
+#cor(ann.faith$mean.faith, ann.faith$FRic, method = "spearman") # 0.772
 
 # Standardize them by their max values; won't change the correlation coeff of course
 ann.faith$Faith.std <- (ann.faith$mean.faith)/max(ann.faith$mean.faith, na.rm = T)
@@ -2158,7 +2147,7 @@ p <- ggplot(ann.faith, aes(x = mean.faith, y = FRic, colour = abs(y))) +
   stat_poly_eq(use_label(c("eq","adj.R2","P")), formula = formula1, label.y = "bottom", label.x = "right", size = 3, colour = "black") + 
   xlab("Faith index") + ylab("FRcic (standardize)") + theme_bw() 
 
-setwd("/net/kryo/work/fabioben/GODLY/plots/")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots/")
 ggsave(plot = p, filename = "Fig.X_FRicxFaith_PA_01.12.23.pdf", dpi = 300, width = 5, height = 4)
 ggsave(plot = p, filename = "Fig.X_FRicxFaith_PA_01.12.23.jpg", dpi = 300, width = 5, height = 4)
 
@@ -2179,7 +2168,7 @@ ggsave(plot = p, filename = "Fig.X_FRicxFaith_PA_01.12.23.jpg", dpi = 300, width
 
 ### 13.2) PA-based FD indices (FEve/RaoQ/FDis/FDiv) vs. HSI-based indices
 
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")
 files <- dir()[grep("FDindices_baseline",dir())]
 # f <- files[2]
 res <- lapply(files, function(f) {
@@ -2216,17 +2205,17 @@ ann.ind.hsi$FDiv.pa <- ann.ind.pa$FDiv.avg
 ### Compute correlations coeff
 ### NB: FRic based on HSI doe snot make sense at all because FRic only sees PA data and any HSI > 0 is automatically converted to 1 by dbFD() 
 
-cor(ann.ind.hsi$FEve.pa, ann.ind.hsi$FEve.hsi, method = "spearman") # 0.61
-summary(lm(FEve.pa ~ FEve.hsi, data = ann.ind.hsi)) # R-squared:  0.298
+#cor(ann.ind.hsi$FEve.pa, ann.ind.hsi$FEve.hsi, method = "spearman") # 0.61
+#summary(lm(FEve.pa ~ FEve.hsi, data = ann.ind.hsi)) # R-squared:  0.298
 
-cor(ann.ind.hsi$FDis.pa, ann.ind.hsi$FDis.hsi, method = "spearman") # 0.87
-summary(lm(FDis.pa ~ FDis.hsi, data = ann.ind.hsi)) # R-squared:  0.655
+#cor(ann.ind.hsi$FDis.pa, ann.ind.hsi$FDis.hsi, method = "spearman") # 0.87
+#summary(lm(FDis.pa ~ FDis.hsi, data = ann.ind.hsi)) # R-squared:  0.655
 
-cor(ann.ind.hsi$RaoQ.pa, ann.ind.hsi$RaoQ.hsi, method = "spearman") # 0.77
-summary(lm(RaoQ.pa ~ RaoQ.hsi, data = ann.ind.hsi)) # R-squared:  0.579
+#cor(ann.ind.hsi$RaoQ.pa, ann.ind.hsi$RaoQ.hsi, method = "spearman") # 0.77
+#summary(lm(RaoQ.pa ~ RaoQ.hsi, data = ann.ind.hsi)) # R-squared:  0.579
 
-cor(ann.ind.hsi$FDiv.pa, ann.ind.hsi$FDiv.hsi, method = "spearman") # 0.28
-summary(lm(FDiv.pa ~ FDiv.hsi, data = ann.ind.hsi)) # R-squared:  0.104
+#cor(ann.ind.hsi$FDiv.pa, ann.ind.hsi$FDiv.hsi, method = "spearman") # 0.28
+#summary(lm(FDiv.pa ~ FDiv.hsi, data = ann.ind.hsi)) # R-squared:  0.104
 
 ### Draw biplots
 p1 <- ggplot(ann.ind.hsi, aes(x = FEve.hsi, y = FEve.pa, colour = abs(y))) +
@@ -2258,7 +2247,7 @@ p4 <- ggplot(ann.ind.hsi, aes(x = FDiv.hsi, y = FDiv.pa, colour = abs(y))) +
   xlab("FDiv (based on HSI)") + ylab("FDiv (based on 1/0)") + theme_bw() 
 
 panel <- ggarrange(p1,p2,p3,p4, align = "hv", ncol = 2, nrow = 2, labels = letters)
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = panel, filename = "Fig.X_panel_fd_HSIvsPA_01.12.23.jpg", dpi = 200, width = 11, height = 9)
 
 
@@ -2300,18 +2289,17 @@ map4 <- ggplot() + geom_raster(aes(x = x, y = y, fill = FDiv.pa), data = ann.ind
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 panel <- ggarrange(map1,map2,map3,map4, align = "hv", ncol = 2, nrow = 2, labels = letters)
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 ggsave(plot = panel, filename = "Fig.X_maps_fd_PA_01.12.23.jpg", dpi = 200, width = 10, height = 4.5)
 
 
 # Check FEve without and with tropics
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.pa"], method = "spearman") # 0.46
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.pa"], method = "spearman") # 0.47
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.pa"], method = "spearman") # 0.65
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.pa"], method = "spearman") # 0.67
-cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.pa"], method = "spearman") # 0.64
+#cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 20),"FEve.pa"], method = "spearman") # 0.46
+#cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 30),"FEve.pa"], method = "spearman") # 0.47
+#cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 50),"FEve.pa"], method = "spearman") # 0.65
+#cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 60),"FEve.pa"], method = "spearman") # 0.67
+#cor(ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.hsi"], ann.ind.hsi[which(abs(ann.ind.hsi$y) < 70),"FEve.pa"], method = "spearman") # 0.64
 # So, better if you remove latitudes lower than 60° but not that much
-
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
