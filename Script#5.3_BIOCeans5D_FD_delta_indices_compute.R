@@ -27,7 +27,7 @@ library("marmap")
 world <- map_data("world") # coastlines for maps
 world2 <- map_data("world2") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -282,7 +282,7 @@ for(i in indices) {
 
 ### 2) Calculate mean ensemble values for each FD indices and assess variability per SDm and ESM
 indices <- c("SR","FR","SES.FR","Jac","Jne","Jtu","FEve","FDis","RaoQ","FDiv")
-i <- "FEve" # for testing
+#i <- "FEve" # for testing
 
 for(i in indices) {
     
