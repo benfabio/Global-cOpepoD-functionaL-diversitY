@@ -31,7 +31,7 @@ library("raster")
 world <- map_data("world") 
 world2 <- map_data("world2")
 
-setwd("/net/kryo/work/fabioben/GODLY/data")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data")
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -106,11 +106,10 @@ fdiv <- ggplot() + geom_raster(aes(x = x, y = y, fill = FDiv), data = fd) +
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 ### Use FDis instead of Rao's Q in panel
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 fig1 <- ggarrange(sr,faith,ses.faith,feve,fdis,fdiv, align = 'hv', ncol = 2, nrow = 3, labels = letters)
 ggsave(plot = fig1, filename = "Fig.1_mean_ann_fd_indices_12.12.23.jpg", dpi = 300, width = 10, height = 6.5)
 ggsave(plot = fig1, filename = "Fig.1_mean_ann_fd_indices_12.12.23.pdf", dpi = 300, width = 10, height = 6.5)
-
 
 # Also save individual maps 
 ggsave(plot = sr, filename = "map_mean_ann_sr_23.11.23.jpg", dpi = 300, height = 4, width = 7)
@@ -221,7 +220,7 @@ ratio <- ggplot() + geom_raster(aes(x = x, y = y, fill = Bratio), data = fd) +
     scale_y_continuous(name = "", limits = c(-90,90), expand = c(0,0), labels = NULL)
 
 # Save 
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 fig2 <- ggarrange(jac,jtu,jne,ratio, align = 'hv', ncol = 2, nrow = 2, labels = letters[1:4])
 ggsave(plot = fig2, filename = "Fig.2_mean_ann_beta_fd_indices_23.11.23.jpg", dpi = 300, width = 12, height = 4.5)
 ggsave(plot = fig2, filename = "Fig.2_mean_ann_beta_fd_indices_23.11.23.pdf", dpi = 300, width = 12, height = 4.5)
@@ -279,7 +278,7 @@ p6 <- ggplot(fd, aes(x = Jac, y = MESOZOO, colour = abs(y))) +
   xlab("Trait dissimilarity (Jaccard)") + ylab("Mesozooplankton biomass (mgC.m-3)") + theme_bw()
 
 # Save
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 fig4 <- ggarrange(p1,p2,p3,p4,p5,p6, align = 'hv', ncol = 2, nrow = 3, labels = letters[2:7], common.legend = T)
 fig4v2 <- ggarrange(p1,p2,p3,p4,p5,p6, align = 'hv', ncol = 3, nrow = 2, labels = letters[2:7], common.legend = T)
 ggsave(plot = fig4, filename = "Fig.4_B-EF_fd_biomass_08.03.24.jpg", dpi = 300, width = 9.5, height = 13)
@@ -360,13 +359,15 @@ data4pca <- fd[,c("x","y",names2keep)]
 colnames(data4pca)[12] <- "RaoQ"
 colnames(data4pca)[20] <- "NPP"
 colnames(data4pca)[24] <- "Slope"
+
 # Normalize SR for z-scores analyses
 maxou <- max(data4pca$SR)
 data4pca$SR <- data4pca$SR/maxou
+
 # Log transform
 data4pca[,c(13:22,25)] <- log10(data4pca[,c(13:22,25)])
 data4pca <- na.omit(data4pca) 
-# summary(data4pca); dim(data4pca)
+#summary(data4pca); dim(data4pca)
 
 # Center and scale values prioro to clustering
 scaled.data4pca <- data4pca
@@ -602,9 +603,7 @@ dev.off()
 
 ### Plot palette
 data4leftjoin$color <- clustcol.height
-
 pal <- pal.bands(rev(data4leftjoin$color), n = k)
-
 
 ### --------------------------------------------------------------------------
 
@@ -617,13 +616,13 @@ maps <- lapply(indices, function(i) {
         message(paste("\n","Mapping ∆",i,"\n", sep = ""))
     
         if(i %in% c("SR","FR")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
         } else if (i == "SES.FR") {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
         } else if (i %in% c("Jac","Jne","Jtu")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
         } else {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
         } # eo 1st if else loop
     
         # Vector files of interest
@@ -783,7 +782,7 @@ maps <- lapply(indices, function(i) {
 # )
 
 ### Use FDis instead of Rao's Q in panel
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 fig5 <- ggarrange(maps[[1]],maps[[2]],maps[[3]],maps[[4]],maps[[6]],maps[[7]],maps[[8]],maps[[9]], align = 'hv', ncol = 2, nrow = 4, labels = letters[1:10] )
 
 ggsave(plot = fig5, filename = "Fig.5_mean_ann_∆fd_indices_24.11.23.jpg", dpi = 300, width = 10, height = 8)
@@ -809,13 +808,13 @@ maps <- lapply(indices, function(i) {
         message(paste("\n","Mapping ∆",i,"\n", sep = ""))
     
         if(i %in% c("SR","FR")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/Faith")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/Faith")
         } else if (i == "SES.FR") {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/Faith/SES")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/Faith/SES")
         } else if (i %in% c("Jac","Jne","Jtu")) {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/beta.div")
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/beta.div")
         } else {
-            setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
+            setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid")    
         } # eo 1st if else loop
     
         # Vector files of interest
@@ -859,33 +858,33 @@ rm(maps); gc()
 # Convert to 0-100%
 table$mean <- (table$mean)*100
 
-mean(table[table$var == "SR","mean"]) ; sd(table[table$var == "SR","mean"])
-mean(table[table$var == "FR","mean"]) ; sd(table[table$var == "FR","mean"])
-mean(table[table$var == "FEve","mean"]) ; sd(table[table$var == "FEve","mean"])
-mean(table[table$var == "FDis","mean"]) ; sd(table[table$var == "FDis","mean"])
-mean(table[table$var == "FDiv","mean"]) ; sd(table[table$var == "FDiv","mean"])
-mean(table[table$var == "Jac","mean"]) ; sd(table[table$var == "Jac","mean"])
-mean(table[table$var == "Jtu","mean"]) ; sd(table[table$var == "Jtu","mean"])
-mean(table[table$var == "Jne","mean"]) ; sd(table[table$var == "Jne","mean"])
+# mean(table[table$var == "SR","mean"]) ; sd(table[table$var == "SR","mean"])
+# mean(table[table$var == "FR","mean"]) ; sd(table[table$var == "FR","mean"])
+# mean(table[table$var == "FEve","mean"]) ; sd(table[table$var == "FEve","mean"])
+# mean(table[table$var == "FDis","mean"]) ; sd(table[table$var == "FDis","mean"])
+# mean(table[table$var == "FDiv","mean"]) ; sd(table[table$var == "FDiv","mean"])
+# mean(table[table$var == "Jac","mean"]) ; sd(table[table$var == "Jac","mean"])
+# mean(table[table$var == "Jtu","mean"]) ; sd(table[table$var == "Jtu","mean"])
+# mean(table[table$var == "Jne","mean"]) ; sd(table[table$var == "Jne","mean"])
 
 ### Add raster of regions
-setwd("/net/kryo/work/fabioben/GODLY/data/clusters")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/clusters")
 ras <- get(load("raster_clusters_ward_k6_28.11.23.RData"))
 table$region <- extract(ras, table[,c('x','y')]) # summary(factor(table$region))
 table2 <- table[!is.na(table$region),]
-# summary(factor(table2$region))
+#summary(factor(table2$region))
 
-mean(table2[table2$var == "Jac" & abs(table2$y) < 30,"mean"]); sd(table2[table2$var == "Jac" & abs(table2$y) < 30,"mean"])
-mean(table2[table2$var == "Jac" & abs(table2$y) > 30,"mean"]); sd(table2[table2$var == "Jac" & abs(table2$y) > 30,"mean"])
+# mean(table2[table2$var == "Jac" & abs(table2$y) < 30,"mean"]); sd(table2[table2$var == "Jac" & abs(table2$y) < 30,"mean"])
+# mean(table2[table2$var == "Jac" & abs(table2$y) > 30,"mean"]); sd(table2[table2$var == "Jac" & abs(table2$y) > 30,"mean"])
 
-mean(table2[table2$var == "Jne" & table2$region == 1,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 1,"mean"])
-mean(table2[table2$var == "Jne" & table2$region == 2,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 2,"mean"])
-mean(table2[table2$var == "Jne" & table2$region == 3,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 3,"mean"])
-mean(table2[table2$var == "Jne" & table2$region == 4,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 4,"mean"])
-mean(table2[table2$var == "Jne" & table2$region == 5,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 5,"mean"])
-mean(table2[table2$var == "Jne" & table2$region == 6,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 6,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 1,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 1,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 2,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 2,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 3,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 3,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 4,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 4,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 5,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 5,"mean"])
+# mean(table2[table2$var == "Jne" & table2$region == 6,"mean"]); sd(table2[table2$var == "Jne" & table2$region == 6,"mean"])
 
-cor(table2[table2$var == "Jac","mean"], table2[table2$var == "Jtu","mean"])
+# cor(table2[table2$var == "Jac","mean"], table2[table2$var == "Jtu","mean"])
 
 ### --------------------------------------------------------------------------
 
@@ -971,7 +970,7 @@ p10 <- ggplot(fd, aes(x = Faith, y = Jne, colour = abs(y))) +
   xlab("Faith index") + ylab("Trait nedtedness") + theme_bw()
 
 # Organize in panel and save; split last three plots in a different panel
-setwd("/net/kryo/work/fabioben/GODLY/plots")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/plots")
 
 figX.1 <- ggarrange(p1,p2,p3,p4,p5,p6,p7.1,p7.2, align = 'hv', ncol = 2, nrow = 4, labels = letters, common.legend = T)
 figX.2 <- ggarrange(p8,p9,p10, align = 'hv', ncol = 1, nrow = 3, labels = letters, common.legend = T)
