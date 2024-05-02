@@ -29,7 +29,7 @@ library("naniar")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir on kryo
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
