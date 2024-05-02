@@ -24,12 +24,12 @@ library("ggthemes")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 1) Load the tables of Faith's indices and compute ensemble averages and uncertainties around it
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/HSI_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
 files <- dir()[grep("FDindices_baseline",dir())]
 # f <- files[2]
 res <- lapply(files, function(f) {
@@ -59,7 +59,7 @@ ggplot(data = tab, aes(x = factor(SDM), y = RaoQ)) + geom_boxplot() + xlab("SDM"
 ggplot(data = tab, aes(x = factor(SDM), y = FDiv)) + geom_boxplot() + xlab("SDM") + ylab("FDiv") + facet_wrap(.~factor(month), ncol = 4)
 
 ### STRONGEST SDM-DRIVEN VARIABILITY FOR: FEve (higher for ANN > GLM > GAM) and FRic (higher for ANN > GAM > GLM)
-summary(tab[tab$SDM == "ANN",])
+#summary(tab[tab$SDM == "ANN",])
 # ggplot() + geom_raster(aes(x = x, y = y, fill = FRic), data = tab[tab$SDM == "ANN",]) + scale_fill_viridis(name = "FRic") +
 #     geom_contour(colour = "grey30", binwidth = .01, size = 0.25, aes(x = x, y = y, z = FRic), data = tab[tab$SDM == "ANN",]) +
 #     geom_polygon(aes(x = long, y = lat, group = group), data = world, fill = "black", colour = "black", size = 0.3) +
@@ -237,7 +237,7 @@ p5 <- ggplot() + geom_raster(aes(x = x, y = y, fill = FDiv.avg), data = mon) + s
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 2) Same as above, but for indices based on PA data
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/") # dir() # should be of length 36
 files <- dir()[grep("FDindices_baseline",dir())]
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -461,9 +461,9 @@ ggplot() + geom_raster(aes(x = x, y = y, fill = FDiv.avg), data = sdms) + scale_
 tab$month <- factor(tab$month,months)
 
 # Ranges per SDMs
-summary(tab[tab$SDM == "GLM","FRic"])
-summary(tab[tab$SDM == "GAM","FRic"])
-summary(tab[tab$SDM == "ANN","FRic"])
+#summary(tab[tab$SDM == "GLM","FRic"])
+#summary(tab[tab$SDM == "GAM","FRic"])
+#summary(tab[tab$SDM == "ANN","FRic"])
 
 ggplot() + geom_raster(aes(x = x, y = y, fill = FRic), data = tab[tab$SDM == "GLM",]) + scale_fill_viridis(name = "FRic") +
     geom_contour(colour = "grey30", binwidth = .1, size = 0.25, aes(x = x, y = y, z = FRic), data = tab[tab$SDM == "GLM",]) +
@@ -494,9 +494,9 @@ ggplot() + geom_raster(aes(x = x, y = y, fill = FRic), data = tab[tab$SDM == "AN
 
 # Issue is that GLM-based FRic ranges from 0 to 0.43 while GAM-based and ANN-based range from 0 to 0.39...like if a factor 100 was missing
 
-summary(tab[tab$SDM == "GLM" & tab$month == "jan","FRic"])
-summary(tab[tab$SDM == "GLM" & tab$month == "apr","FRic"])
-summary(tab[tab$SDM == "GLM" & tab$month == "dec","FRic"]) # issue with december
+#summary(tab[tab$SDM == "GLM" & tab$month == "jan","FRic"])
+#summary(tab[tab$SDM == "GLM" & tab$month == "apr","FRic"])
+#summary(tab[tab$SDM == "GLM" & tab$month == "dec","FRic"]) # issue with december
 
 # Examine distrib of FRic per SDMx months with boxplots
 ggplot(data = tab, aes(x = factor(SDM), y = FRic)) + geom_boxplot() + xlab("SDM") + ylab("FRic") + facet_wrap(.~factor(month), ncol = 4)
@@ -518,7 +518,7 @@ ggplot() + geom_raster(aes(x = x, y = y, fill = FRic), data = tab[tab$month == "
     
 ### Pick a month where strong differences in FRic are apparent: 'apr' and compare comm tables. 
 ## Then do the same with 'dec' since it showed comparable FRic levels
-setwd("/net/kryo/work/fabioben/GODLY/data/community_tables_05_01_21/contemp")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/community_tables_05_01_21/contemp")
 glm.comm <- read.table("table_mon_composition_baseline_GLM_dec.txt")
 gam.comm <- read.table("table_mon_composition_baseline_GAM_dec.txt")
 ann.comm <- read.table("table_mon_composition_baseline_ANN_dec.txt")
@@ -533,7 +533,7 @@ ann.comm <- read.table("table_mon_composition_baseline_ANN_dec.txt")
 # Seems OK
 
 # Load the HSI cutoffs and examine the 1/0 data (SR and comp.)
-setwd("/net/kryo/work/fabioben/GODLY/data/sdm/evaluation_scores_05_01_21")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/sdm/evaluation_scores_05_01_21")
 score.files <- dir()#; files
 scores <- lapply(score.files, function(f) {d<-get(load(f)); return(d)})
 tab.scores <- bind_rows(scores)
@@ -543,7 +543,8 @@ tab.scores[grepl("GLM",rownames(tab.scores)),"SDM"] <- "GLM"
 tab.scores[grepl("ANN",rownames(tab.scores)),"SDM"] <- "ANN"
 tab.scores[grepl("GAM",rownames(tab.scores)),"SDM"] <- "GAM"
 cutoffs <- data.frame( tab.scores %>% group_by(species,SDM) %>% summarise(cutoff = mean(Cutoff_TSS, na.rm = T)/1000) )
-summary(cutoffs) # seems ok
+#summary(cutoffs) # seems ok
+
 library("biomod2")
 # Convert to 1/0 for each comm
 # For computing Faith's index, need to use 1/0 community data (ensemble of thresholds)
@@ -620,18 +621,18 @@ p3 <- ggplot() + geom_raster(aes(x = x, y = y, fill = SR), data = ann.comm_PA) +
 ggarrange(p1,p2,p3, align = 'hv', ncol = 1, nrow = 3)  
 
 ### Examine corr coefficients
-cor(ann.comm_PA$SR, gam.comm_PA$SR, method = "spearman") # basically the same variable
-cor(glm.comm_PA$SR, gam.comm_PA$SR, method = "spearman") # cor is 0.89 in apr so very high too; 0.88 in december
+#cor(ann.comm_PA$SR, gam.comm_PA$SR, method = "spearman") # basically the same variable
+#cor(glm.comm_PA$SR, gam.comm_PA$SR, method = "spearman") # cor is 0.89 in apr so very high too; 0.88 in december
 # Plot
-plot(x = glm.comm_PA$SR, y = gam.comm_PA$SR)
-abline(0,1,col='red')
+# plot(x = glm.comm_PA$SR, y = gam.comm_PA$SR)
+# abline(0,1,col='red')
 
 ### SR differences alone do not explain wild differences in FRic...Examine values of standardized FRic
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 10/08/23: Examine distribution of standardized FRic data
-setwd("/net/kryo/work/fabioben/GODLY/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") # dir() # should be of length 36
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/fd_indices/db_FD/PA_Gawdis_PCoA_Euclid/Stand.Fric") # dir() # should be of length 36
 files <- dir()[grep("FDindices_baseline",dir())]
 res <- mclapply(files, function(f) {
             d <- get(load(f))
@@ -748,22 +749,20 @@ p10 <- ggplot() + geom_raster(aes(x = x, y = y, fill = FDiv.std), data = ann) +
 
 panel.maps.ann <- ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, align = 'hv', ncol = 2, nrow = 5)  
 
-
 ### Monthly variability/ SDM variability
 months <- c("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec")
 tab$month <- factor(tab$month,months)
 
 # Draw boxplots
-ggplot(data = tab, aes(x = factor(SDM), y = SR)) + geom_boxplot() + xlab("SDM") + ylab("SR") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = SR)) + geom_boxplot() + xlab("SDM") + ylab("SR") + facet_wrap(.~factor(month), ncol = 4)
 # And the other way around
 # ggplot(data = tab, aes(x = factor(month), y = SR)) + geom_boxplot() + xlab("SDM") + ylab("SR") + facet_wrap(.~factor(SDM), ncol = 3)
 
-ggplot(data = tab, aes(x = factor(SDM), y = FRic)) + geom_boxplot() + xlab("SDM") + ylab("FRic (standardized)") + facet_wrap(.~factor(month), ncol = 4)
-ggplot(data = tab, aes(x = factor(month), y = FRic)) + geom_boxplot() + xlab("SDM") + ylab("FRic (standardized)") + facet_wrap(.~factor(SDM), ncol = 3)
-
-ggplot(data = tab, aes(x = factor(SDM), y = FEve)) + geom_boxplot() + xlab("SDM") + ylab("FEve") + facet_wrap(.~factor(month), ncol = 4)
-ggplot(data = tab, aes(x = factor(SDM), y = FDis)) + geom_boxplot() + xlab("SDM") + ylab("FDis") + facet_wrap(.~factor(month), ncol = 4)
-ggplot(data = tab, aes(x = factor(SDM), y = FDiv)) + geom_boxplot() + xlab("SDM") + ylab("FDiv") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = FRic)) + geom_boxplot() + xlab("SDM") + ylab("FRic (standardized)") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(month), y = FRic)) + geom_boxplot() + xlab("SDM") + ylab("FRic (standardized)") + facet_wrap(.~factor(SDM), ncol = 3)
+#ggplot(data = tab, aes(x = factor(SDM), y = FEve)) + geom_boxplot() + xlab("SDM") + ylab("FEve") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = FDis)) + geom_boxplot() + xlab("SDM") + ylab("FDis") + facet_wrap(.~factor(month), ncol = 4)
+#ggplot(data = tab, aes(x = factor(SDM), y = FDiv)) + geom_boxplot() + xlab("SDM") + ylab("FDiv") + facet_wrap(.~factor(month), ncol = 4)
 
 
 # Compute mean monthly indices

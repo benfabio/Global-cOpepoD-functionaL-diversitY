@@ -86,7 +86,7 @@ gow <- gawdis(x = traits_red2[,c(8,9,10,12:15,17:19)], groups = c(1,2,3,4,4,4,4,
 
 
 ### 1.B) Load a standard community table and compute FD indices based on 'FD' functions for each grid cell
-setwd("/net/kryo/work/fabioben/GODLY/data/community_tables_05_01_21/contemp")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/community_tables_05_01_21/contemp")
 comm <- read.table("table_mon_composition_baseline_GLM_mar.txt")
 # dim(comm) # 41553   306 (less species that in traits table)
 # summary(comm)
@@ -189,12 +189,12 @@ save(euclid_dist, file = "euclid_dist_postPCoA.Rdata")
 save(gow_fdiv, file = "gower_dist.Rdata")
 
 
-# Test on one random line
-comm_fdiv_no_zero <- comm_fdiv
-comm_fdiv_no_zero[comm_fdiv_no_zero == 0] <- 0.0001 # dim(comm_fdiv_no_zero)
-system.time(
-     dbFD(x = euclid_dist, a = comm_fdiv_no_zero[1:10,], calc.FDiv = F, calc.FRic = F, w.abun = T, stand.x = F, scale.RaoQ = F, calc.FGR = F, calc.CWM = F)
-) #
+### Tests on one randomly chosen lines
+#comm_fdiv_no_zero <- comm_fdiv
+#comm_fdiv_no_zero[comm_fdiv_no_zero == 0] <- 0.0001 # dim(comm_fdiv_no_zero)
+#system.time(
+#    dbFD(x = euclid_dist, a = comm_fdiv_no_zero[1:10,], calc.FDiv = F, calc.FRic = F, w.abun = T, stand.x = F, scale.RaoQ = F, calc.FGR = F, calc.CWM = F)
+#) #
 # utilisateur     système      écoulé 
 #     54.990       9.975      46.268 
 ### --> 10 rows takes about 50s
@@ -236,10 +236,10 @@ system.time(
 
 
 ### 26/07/23: Run function based on 1000 rows to compute FEve/FDis/Rao'sQ and map to check if it makes sense
-indices <- dbFD(x = euclid_dist, a = comm_fdiv_no_zero, calc.FDiv = F, calc.FRic = F, w.abun = T, stand.x = F, scale.RaoQ = F, calc.FGR = F, calc.CWM = F)
+# indices <- dbFD(x = euclid_dist, a = comm_fdiv_no_zero, calc.FDiv = F, calc.FRic = F, w.abun = T, stand.x = F, scale.RaoQ = F, calc.FGR = F, calc.CWM = F)
 # str(indices) # summary(indices)
 # Map to check consistency with Jonas' previous results
-dat <- data.frame(x = na.omit(comm)[1:1000,"x"], y = na.omit(comm)[1:1000,"y"], FEve = indices$FEve, FDis = indices$FDis, RaoQ = indices$RaoQ)
+# dat <- data.frame(x = na.omit(comm)[1:1000,"x"], y = na.omit(comm)[1:1000,"y"], FEve = indices$FEve, FDis = indices$FDis, RaoQ = indices$RaoQ)
 # summary(dat)
 # cor(dat$FDis, dat$RaoQ, method = "spearman") # yes, makes sense
 # ggplot() + geom_tile(aes(x = x, y = y, fill = FDis), data = dat) + scale_fill_viridis(name = "FDis") +
