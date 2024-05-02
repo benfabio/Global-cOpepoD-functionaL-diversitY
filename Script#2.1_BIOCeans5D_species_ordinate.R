@@ -32,7 +32,7 @@ library("flashClust")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -43,6 +43,7 @@ traits <- read.csv("traits_table_Benedetti2023.csv", h = T, sep = ";", dec = ","
 colnames(traits)[8] <- "Body.length" # size vector that we will keep 
 # summary(traits)
 # unique(traits$Trophic.group)
+
 # Replace "" by NA
 library("naniar")
 traits <- traits %>% replace_with_na_all(condition = ~.x == "")
@@ -191,7 +192,7 @@ Q = coranking(Xi = gow, X = famd_dist, input_Xi = c("dist"), input_X = c("dist")
 coRanking::imageplot(Q)
 NX <- coRanking::R_NX(Q)
 AUC <- coRanking::AUC_ln_K(NX)
-round(AUC,3) # 0.750 ! Good
+#round(AUC,3) # 0.750 ! Good
 
 
 ### To evaluate whethrr keeping 4-5 PCoA axis retains enough information compared to the full Gower matrix
@@ -201,7 +202,7 @@ Q = coranking(Xi = gow, X = euclid_dist, input_Xi = c("dist"), input_X = c("dist
 coRanking::imageplot(Q)
 NX <- coRanking::R_NX(Q)
 AUC <- coRanking::AUC_ln_K(NX)
-round(AUC,3)
+#round(AUC,3)
 # 0.834 for 5 dimensions
 # 0.822 for 4 
 # 0.786 for 3
@@ -214,9 +215,9 @@ round(AUC,3)
 ### 5°) Plot AUC score for increasing nb of max PCoA dimensions and FAMD dimensions 
 library("dimRed")
 library("coRanking")
+library("vegan")
 
 ### 5.A) With PCoA axes
-library("vegan")
 pcoa2 <- wcmdscale(d = gow, eig = T)
 pcoa.scores <- data.frame(pcoa2$points)
 # dim(pcoa.scores) # 355 spp x 106 pcoa dimensions
@@ -239,10 +240,10 @@ res <- mclapply(c(2:35), function(i) {
 tab1 <- dplyr::bind_rows(res)
 # tab
 
-ggplot(aes(x = Ndim, y = AUC), data = tab) + geom_point() +
-    xlab("Number of dimensions (PCoA axes)") + 
-    ylab("Quality of species trait space (AUC)") +
-    theme_bw()
+# ggplot(aes(x = Ndim, y = AUC), data = tab) + geom_point() +
+#     xlab("Number of dimensions (PCoA axes)") + 
+#     ylab("Quality of species trait space (AUC)") +
+#     theme_bw()
 ### --> 4 or 5 more than enough
 
 
@@ -274,10 +275,10 @@ res <- mclapply(c(2:9), function(i) {
 tab2 <- dplyr::bind_rows(res)
 # tab
 
-ggplot(aes(x = Ndim, y = AUC), data = tab) + geom_point() +
-    xlab("Number of dimensions (FAMD axes)") + 
-    ylab("Quality of species trait space (AUC)") +
-    theme_bw()
+# ggplot(aes(x = Ndim, y = AUC), data = tab) + geom_point() +
+#     xlab("Number of dimensions (FAMD axes)") + 
+#     ylab("Quality of species trait space (AUC)") +
+#     theme_bw()
 
 ### Rbind both tabs and plot together 
 tab1$method <- "PCoA"
