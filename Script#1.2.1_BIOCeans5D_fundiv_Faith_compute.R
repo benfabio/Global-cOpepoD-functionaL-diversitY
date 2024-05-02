@@ -29,7 +29,7 @@ library("picante")
 
 world <- map_data("world") # coastlines for maps
 
-setwd("/net/kryo/work/fabioben/GODLY/data") # working dir
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data") # working dir
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -76,15 +76,13 @@ fit_gow <- flashClust::hclust(gow, method = "average")
 # plot(fit_gow) # plot(flashClust::hclust(gow, method = "ward"))
 
 
-
 ### 2) Load a standard community table and compute FD indices based on 'FD' functions for each grid cell
-setwd("/net/kryo/work/fabioben/GODLY/data/community_tables_05_01_21/contemp")
+setwd("/net/kryo/work/fabioben/BIOCeans5D/data/community_tables_05_01_21/contemp")
 comm <- read.table("table_mon_composition_baseline_GAM_apr.txt")
 # Subset traits_red2 to spp of interest
 spp2keep <- colnames(comm)[c(4:length(comm))] #; spp2keep
 commons <- intersect(spp2keep,traits_red2$Species)# ; length(commons) # FD indices based on 284 taxa 
 comm_fdiv <- na.omit(comm[,c(commons)])
-
 
 
 ### 3) Compute Faith's index for 'comm_fdiv' based on phylo object derived from 'fit_gow'
@@ -108,10 +106,10 @@ faith2 <- pd(samp = comm_fdiv_PA, tree = as.phylo(fit_gow), include.root = T)
 
 ### 4) Compute SES PD
 # ?ses.mpd
-ses.faith <- ses.pd(samp = comm_fdiv[1:100,], tree = as.phylo(fit_gow), null.model = "taxa.labels", runs = 99)
-summary(ses.faith)
-dim(ses.faith)
-# OK good. Write RSCRIPTBATCH code
+# ses.faith <- ses.pd(samp = comm_fdiv[1:100,], tree = as.phylo(fit_gow), null.model = "taxa.labels", runs = 99)
+#summary(ses.faith)
+#dim(ses.faith)
+# OK good. Write RSCRIPTBATCH code for this
 
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
 ### ------------------------------------------------------------------------------------------------------------------------------------------------------
