@@ -1,5 +1,5 @@
 # Last update: 02/05/2024
-## Global-cOpepoD-functionaL-diversitY - Benedetti et al. (in prep. for GCB)
+## Benedetti et al. (in prep. for GCB) - Global copepod functional diversity patterns
 
 This repository contains R scripts developed during my postdoc at ETH Zürich, D-USYS, IBP, UP group.
 The present R scripts were developed to produce the results a study in preparation about the global contemporary and future patterns of marine copepod functional diversity how it relates to the functioning of the biological carbon pump.
